@@ -4,8 +4,14 @@ class ItemHomepage {
   final String name;
   final IconData icon;
   final Color color;
+  final Color textColor;
 
-  ItemHomepage(this.name, this.icon, this.color);
+  ItemHomepage(
+    this.name,
+    this.icon,
+    this.color, {
+    this.textColor = Colors.white,
+  });
 }
 
 class MyHomePage extends StatelessWidget {
@@ -16,34 +22,64 @@ class MyHomePage extends StatelessWidget {
   final String kelas = 'PBP A';
 
   final List<ItemHomepage> items = [
+    // Kelompok Modul Education
     ItemHomepage(
       'Lihat Education',
       Icons.school,
-      const Color(0xFF2563EB),
+      const Color(0xFF1D4ED8), // Deep Royal Blue
+      textColor: Colors.white,
     ),
     ItemHomepage(
       'Tambah Education',
       Icons.add_circle,
-      const Color(0xFF059669),
+      const Color(0xFF38BDF8), // Vibrant Sky Blue
+      textColor: const Color(0xFF0F172A), // Dark Navy
     ),
+    // Modul Skills
+    ItemHomepage(
+      'Lihat Skills',
+      Icons.lightbulb_outline,
+      const Color(0xFF7C3AED), // Rich Violet Purple
+      textColor: Colors.white,
+    ),
+    // Kelompok Modul Experience
+    ItemHomepage(
+      'Lihat Experience',
+      Icons.work,
+      const Color(0xFF047857), // Deep Forest Emerald
+      textColor: Colors.white,
+    ),
+    ItemHomepage(
+      'Tambah Experience',
+      Icons.note_add,
+      const Color(0xFF34D399), // Fresh Mint
+      textColor: const Color(0xFF0F172A), // Dark Navy
+    ),
+    // Modul Sistem
     ItemHomepage(
       'Logout',
       Icons.logout,
-      const Color(0xFFDC2626),
+      const Color(0xFFBE123C), // Deep Crimson Rose
+      textColor: Colors.white,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? 16.0 : 24.0,
+            vertical: 16.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Navbar Pill Shape - Panjang penuh mengikuti lebar konten (w-full), tapi tingginya ramping
+              // Navbar Pill Shape
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -99,13 +135,14 @@ class MyHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
 
-              // GridView Kartu Tombol
+              // GridView 6 Kartu Tombol (Responsif & Anti-Overflow di Layar Sempit 360px)
               GridView.count(
                 primary: false,
                 shrinkWrap: true,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                crossAxisSpacing: isMobile ? 10 : 16,
+                mainAxisSpacing: isMobile ? 10 : 16,
                 crossAxisCount: 3,
+                childAspectRatio: isMobile ? 0.78 : 1.1,
                 children: items.map((ItemHomepage item) {
                   return ItemCard(item);
                 }).toList(),
@@ -128,7 +165,7 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width / 3.6,
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
@@ -154,10 +191,12 @@ class InfoCard extends StatelessWidget {
           Text(
             content,
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 12.0,
-              color: Color(0xFF64748B),
-              fontWeight: FontWeight.w500,
+              color: Color(0xFF475569),
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -210,31 +249,35 @@ class ItemCard extends StatelessWidget {
               );
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(7.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: item.textColor == Colors.white
+                        ? Colors.white.withOpacity(0.2)
+                        : Colors.black.withOpacity(0.08),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     item.icon,
-                    color: Colors.white,
-                    size: 26.0,
+                    color: item.textColor,
+                    size: 24.0,
                   ),
                 ),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 6.0),
                 Text(
                   item.name,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: item.textColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 13.0,
-                    height: 1.2,
+                    fontSize: 12.0,
+                    height: 1.15,
                   ),
                 ),
               ],
