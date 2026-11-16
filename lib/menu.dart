@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
 class ItemHomepage {
   final String name;
@@ -69,6 +70,18 @@ class MyHomePage extends StatelessWidget {
     final bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'MyPortfolio',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -79,34 +92,7 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Navbar Pill Shape
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'MyPortfolio',
-                    style: TextStyle(
-                      color: Color(0xFF1E293B),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20.0,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 8.0),
 
               // Row 3 InfoCard
               Row(
