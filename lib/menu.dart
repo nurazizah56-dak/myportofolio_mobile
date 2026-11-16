@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/education_form.dart';
 
 class ItemHomepage {
   final String name;
@@ -74,12 +75,18 @@ class MyHomePage extends StatelessWidget {
         title: const Text(
           'MyPortfolio',
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+            color: Color(0xFF1E293B),
+            fontWeight: FontWeight.w800,
+            fontSize: 20.0,
+            letterSpacing: -0.5,
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
+        // Putih bersih — senada dengan kartu InfoCard NPM/Name/Class
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
+        elevation: 0,
+        shadowColor: Colors.black12,
+        surfaceTintColor: Colors.transparent,
       ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
@@ -233,6 +240,15 @@ class ItemCard extends StatelessWidget {
                   ),
                 ),
               );
+            // Navigate ke halaman yang sesuai
+            if (item.name == 'Tambah Education') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EducationFormPage(),
+                ),
+              );
+            }
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
