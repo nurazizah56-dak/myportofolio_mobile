@@ -12,7 +12,14 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Color(0xFF1D4ED8), // Royal Blue konsisten dengan tema MyPortfolio
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF1D4ED8), // Royal Blue atas
+                  Color(0xFF3B82F6), // Blue mid
+                ],
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
