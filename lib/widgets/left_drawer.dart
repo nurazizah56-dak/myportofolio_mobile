@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/menu.dart';
-import 'package:myportofolio_mobile/education_form.dart';
+import 'package:myportofolio_mobile/screens/menu.dart';
+import 'package:myportofolio_mobile/screens/education_form.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -62,7 +62,9 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Tambah Education'),
             // Navigasi ke halaman formulir tambah education
             onTap: () {
-              Navigator.pushReplacement(
+              // Tutup drawer terlebih dahulu agar modal route drawer tidak tertinggal di stack navigasi
+              Navigator.pop(context);
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const EducationFormPage(),

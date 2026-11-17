@@ -39,18 +39,28 @@ class _EducationFormPageState extends State<EducationFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Add Education Form',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        title: const Text(
+          'Add Education Form',
+          style: TextStyle(
+            color: Color(0xFF1E293B),
+            fontWeight: FontWeight.w800,
+            fontSize: 20.0,
+            letterSpacing: -0.5,
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        // Tombol kembali langsung ke halaman utama
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        // Putih bersih — konsisten dengan tema AppBar di halaman utama
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
+        elevation: 0,
+        shadowColor: Colors.black12,
+        surfaceTintColor: Colors.transparent,
       ),
       // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
@@ -270,8 +280,8 @@ class _EducationFormPageState extends State<EducationFormPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              title: Row(
-                                children: const [
+                              title: const Row(
+                                children: [
                                   Icon(Icons.check_circle,
                                       color: Color(0xFF38BDF8), size: 22),
                                   SizedBox(width: 8),
@@ -369,4 +379,3 @@ class _EducationFormPageState extends State<EducationFormPage> {
     );
   }
 }
-

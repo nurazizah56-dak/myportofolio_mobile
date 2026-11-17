@@ -1,21 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
-import 'package:myportofolio_mobile/education_form.dart';
+import 'package:myportofolio_mobile/widgets/item_card.dart';
 
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-  final Color color;
-  final Color textColor;
-
-  ItemHomepage(
-    this.name,
-    this.icon,
-    this.color, {
-    this.textColor = Colors.white,
-  });
-}
-
+// Halaman utama portofolio — menampilkan profil pemilik dan menu navigasi
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
@@ -81,7 +68,7 @@ class MyHomePage extends StatelessWidget {
             letterSpacing: -0.5,
           ),
         ),
-        // Putih bersih — senada dengan kartu InfoCard NPM/Name/Class
+        // Putih bersih 
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
         elevation: 0,
@@ -101,7 +88,7 @@ class MyHomePage extends StatelessWidget {
             children: [
               const SizedBox(height: 8.0),
 
-              // Row 3 InfoCard
+              // Row 3 InfoCard profil pemilik portofolio
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -148,6 +135,7 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
+// Widget kartu profil reusable untuk menampilkan NPM, Nama, dan Kelas
 class InfoCard extends StatelessWidget {
   final String title;
   final String content;
@@ -193,99 +181,6 @@ class InfoCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: item.color.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Material(
-        color: item.color,
-        borderRadius: BorderRadius.circular(24),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(24),
-          onTap: () {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  backgroundColor: const Color(0xFF0F172A),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  content: Text(
-                    'Kamu telah menekan tombol ${item.name}!',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              );
-            // Navigate ke halaman yang sesuai
-            if (item.name == 'Tambah Education') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EducationFormPage(),
-                ),
-              );
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(7.0),
-                  decoration: BoxDecoration(
-                    color: item.textColor == Colors.white
-                        ? Colors.white.withOpacity(0.2)
-                        : Colors.black.withOpacity(0.08),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    item.icon,
-                    color: item.textColor,
-                    size: 24.0,
-                  ),
-                ),
-                const SizedBox(height: 6.0),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: item.textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                    height: 1.15,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
