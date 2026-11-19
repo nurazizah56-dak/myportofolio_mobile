@@ -13,33 +13,33 @@ class MyHomePage extends StatelessWidget {
   final List<ItemHomepage> items = [
     // Kelompok Modul Education
     ItemHomepage(
-      'Lihat Education',
+      'View Education',
       Icons.school,
       const Color(0xFF1D4ED8), // Deep Royal Blue
       textColor: Colors.white,
     ),
     ItemHomepage(
-      'Tambah Education',
+      'Add Education',
       Icons.add_circle,
       const Color(0xFF38BDF8), // Vibrant Sky Blue
       textColor: const Color(0xFF0F172A), // Dark Navy
     ),
     // Modul Skills
     ItemHomepage(
-      'Lihat Skills',
+      'View Skills',
       Icons.lightbulb_outline,
       const Color(0xFF7C3AED), // Rich Violet Purple
       textColor: Colors.white,
     ),
     // Kelompok Modul Experience
     ItemHomepage(
-      'Lihat Experience',
+      'View Experience',
       Icons.work,
       const Color(0xFF047857), // Deep Forest Emerald
       textColor: Colors.white,
     ),
     ItemHomepage(
-      'Tambah Experience',
+      'Add Experience',
       Icons.note_add,
       const Color(0xFF34D399), // Fresh Mint
       textColor: const Color(0xFF0F172A), // Dark Navy
@@ -103,7 +103,7 @@ class MyHomePage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  'Selamat datang di MyPortfolio Mobile!',
+                  'Welcome to MyPortfolio Mobile!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w800,

@@ -16,24 +16,103 @@ class _EducationFormPageState extends State<EducationFormPage> {
 
   // Variabel untuk menyimpan nilai input dari setiap field
   String _institutionName = '';
-  String _degree = 'Sarjana (S1)';
+  String _degree = 'Bachelor (S1)';
   String _location = '';
   String _startYear = '';
   String _endYear = '';
   String _mapsUrl = '';
   String _logo = '';
 
-  // Pilihan jenjang pendidikan (setara dengan field degree di web Django)
-  final List<String> _degreeOptions = [
-    'SD / Sederajat',
-    'SMP / Sederajat',
-    'SMA / SMK / Sederajat',
-    'Diploma (D3/D4)',
-    'Sarjana (S1)',
-    'Magister (S2)',
-    'Doktor (S3)',
-    'Lainnya',
-  ];
+  // Helper widget to build each degree chip item
+  Widget _buildDegreeChip(String shortCode, String fullName) {
+    final bool isSelected = _degree == fullName;
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8.0),
+          onTap: () {
+            setState(() {
+              _degree = fullName;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 9.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFF1D4ED8) : Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFF1D4ED8)
+                    : const Color(0xFFCBD5E1),
+                width: 1.2,
+              ),
+            ),
+            child: Text(
+              shortCode,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? Colors.white : const Color(0xFF1E293B),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 12.5,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Interactive 2-row Degree Chips matching user design specification
+  Widget _buildDegreeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Degree',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1E293B),
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          children: [
+            _buildDegreeChip('SD', 'Elementary School (SD)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('SMP', 'Junior High School (SMP)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('SMA/SMK', 'High School / Vocational (SMA/SMK)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('D3/D4', 'Diploma (D3/D4)'),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          children: [
+            _buildDegreeChip('S1', 'Bachelor (S1)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('S2', 'Master (S2)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('S3', 'Doctorate (S3)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('Other', 'Other'),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          'Selected: $_degree',
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Color(0xFF64748B),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,39 +167,17 @@ class _EducationFormPageState extends State<EducationFormPage> {
                   },
                   validator: (String? value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Institution name tidak boleh kosong!';
+                      return 'Institution name cannot be empty!';
                     }
                     return null;
                   },
                 ),
               ),
 
-              // === Degree (Dropdown, setara Select di web Django) ===
+              // === Degree Chips (Replaces Dropdown) ===
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Degree / Jenjang Pendidikan',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  value: _degree,
-                  // Batasi tinggi popup agar tidak memenuhi layar
-                  menuMaxHeight: 280,
-                  isExpanded: true,
-                  items: _degreeOptions
-                      .map((degree) => DropdownMenuItem(
-                            value: degree,
-                            child: Text(degree),
-                          ))
-                      .toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _degree = newValue!;
-                    });
-                  },
-                ),
+                child: _buildDegreeSelector(),
               ),
 
               // === Location ===
@@ -141,7 +198,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                   },
                   validator: (String? value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Lokasi tidak boleh kosong!';
+                      return 'Location cannot be empty!';
                     }
                     return null;
                   },
@@ -167,10 +224,10 @@ class _EducationFormPageState extends State<EducationFormPage> {
                   },
                   validator: (String? value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Tahun mulai tidak boleh kosong!';
+                      return 'Start year cannot be empty!';
                     }
                     if (int.tryParse(value.trim()) == null) {
-                      return 'Masukkan angka tahun yang valid!';
+                      return 'Please enter a valid year number!';
                     }
                     return null;
                   },
@@ -287,7 +344,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                                   SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
-                                      'Education ditambahkan!',
+                                      'Education Added!',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -316,7 +373,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                                     _formKey.currentState!.reset();
                                     setState(() {
                                       _institutionName = '';
-                                      _degree = 'Sarjana (S1)';
+                                      _degree = 'Bachelor (S1)';
                                       _location = '';
                                       _startYear = '';
                                       _endYear = '';
