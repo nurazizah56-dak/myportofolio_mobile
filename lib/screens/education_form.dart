@@ -127,14 +127,19 @@ class _EducationFormPageState extends State<EducationFormPage> {
             letterSpacing: -0.5,
           ),
         ),
-        // Tombol kembali langsung ke halaman utama
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
+        // 3-line hamburger menu icon to open drawer without back button redundancy
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
           },
         ),
-        // Putih bersih — konsisten dengan tema AppBar di halaman utama
+        // Clean white AppBar consistent with the rest of the application
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
         elevation: 0,
@@ -143,169 +148,188 @@ class _EducationFormPageState extends State<EducationFormPage> {
       ),
       // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // === Institution Name ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Universitas Indonesia',
-                    labelText: 'Institution Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _institutionName = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Institution name cannot be empty!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === Degree Chips (Replaces Dropdown) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: _buildDegreeSelector(),
-              ),
-
-              // === Location ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Depok, West Java',
-                    labelText: 'Location',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _location = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Location cannot be empty!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === Start Year ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: '2024',
-                    labelText: 'Start Year',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _startYear = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Start year cannot be empty!';
-                    }
-                    if (int.tryParse(value.trim()) == null) {
-                      return 'Please enter a valid year number!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === End Year (opsional, kosongkan jika masih studi) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: '2028',
-                    labelText: 'End Year (leave blank if ongoing)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _endYear = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Google Maps URL (opsional) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.url,
-                  decoration: InputDecoration(
-                    hintText: 'https://maps.google.com/...',
-                    labelText: 'Google Maps URL',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _mapsUrl = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Logo URL (opsional) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.url,
-                  decoration: InputDecoration(
-                    hintText: 'https://.../logo.png',
-                    labelText: 'Logo URL',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _logo = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Tombol Simpan ===
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        Theme.of(context).colorScheme.primary,
+      backgroundColor: const Color(0xFFEFF6FF),
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // === Institution Name ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Universitas Indonesia',
+                      labelText: 'Institution Name',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    onPressed: () {
+                    onChanged: (String? value) {
+                      setState(() {
+                        _institutionName = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Institution name cannot be empty!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === Degree Chips (Replaces Dropdown) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: _buildDegreeSelector(),
+                ),
+
+                // === Location ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Depok, West Java',
+                      labelText: 'Location',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _location = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Location cannot be empty!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === Start Year ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: '2024',
+                      labelText: 'Start Year',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _startYear = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Start year cannot be empty!';
+                      }
+                      if (int.tryParse(value.trim()) == null) {
+                        return 'Please enter a valid year number!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === End Year (opsional, kosongkan jika masih studi) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: '2028',
+                      labelText: 'End Year (leave blank if ongoing)',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _endYear = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                // === Google Maps URL (opsional) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
+                    decoration: InputDecoration(
+                      hintText: 'https://maps.google.com/...',
+                      labelText: 'Google Maps URL',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _mapsUrl = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                // === Logo URL (opsional) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
+                    decoration: InputDecoration(
+                      hintText: 'https://.../logo.png',
+                      labelText: 'Logo URL',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _logo = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 16.0),
+
+                // === Save Button ===
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1D4ED8), // Royal Blue Education theme
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                      ),
+                      onPressed: () {
                       // Validasi seluruh field yang memiliki validator
                       if (_formKey.currentState!.validate()) {
                         // Tampilkan pop-up konfirmasi dengan data yang dimasukkan
@@ -390,7 +414,11 @@ class _EducationFormPageState extends State<EducationFormPage> {
                     },
                     child: const Text(
                       'Save',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                      ),
                     ),
                   ),
                 ),
@@ -399,8 +427,9 @@ class _EducationFormPageState extends State<EducationFormPage> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Helper: baris label + nilai yang compact untuk AlertDialog
   Widget _dialogRow(String label, String value) {
