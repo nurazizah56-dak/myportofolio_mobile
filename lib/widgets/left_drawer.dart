@@ -68,6 +68,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
                 ),
               );
@@ -83,6 +84,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experience'),
                   builder: (context) => const ExperienceFormPage(),
                 ),
               );

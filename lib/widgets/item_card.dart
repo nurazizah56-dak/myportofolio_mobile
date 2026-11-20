@@ -60,11 +60,12 @@ class ItemCard extends StatelessWidget {
                   ),
                 ),
               );
-            // Navigate ke halaman yang sesuai
+            // Navigate ke halaman yang sesuai dengan named route untuk riwayat browser Chrome
             if (item.name == 'Add Education' || item.name == 'Tambah Education') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
                 ),
               );
@@ -72,6 +73,7 @@ class ItemCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experience'),
                   builder: (context) => const ExperienceFormPage(),
                 ),
               );
