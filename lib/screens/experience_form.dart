@@ -52,7 +52,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF047857), // Forest Emerald theme
+              primary: Color(0xFF1D4ED8), // Royal Blue theme
               onPrimary: Colors.white,
               onSurface: Color(0xFF1E293B),
             ),
@@ -99,11 +99,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF047857) : Colors.white,
+              color: isSelected ? const Color(0xFF1D4ED8) : Colors.white,
               borderRadius: BorderRadius.circular(8.0),
               border: Border.all(
                 color: isSelected
-                    ? const Color(0xFF047857)
+                    ? const Color(0xFF1D4ED8)
                     : const Color(0xFFCBD5E1),
                 width: 1.2,
               ),
@@ -173,11 +173,16 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
             letterSpacing: -0.5,
           ),
         ),
-        // Explicit back button consistent with Add Education Form
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
+        // 3-line hamburger menu icon to open drawer without back button redundancy
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
           },
         ),
         // Clean white AppBar consistent with the rest of the application
@@ -248,7 +253,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       filled: true,
                       fillColor: Colors.white,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_month, color: Color(0xFF047857)),
+                        icon: const Icon(Icons.calendar_month, color: Color(0xFF1D4ED8)),
                         onPressed: () => _pickDate(isStart: true),
                       ),
                       border: OutlineInputBorder(
@@ -286,7 +291,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       style: TextStyle(fontSize: 12.0, color: Color(0xFF64748B)),
                     ),
                     value: _isOngoing,
-                    activeColor: const Color(0xFF047857),
+                    activeColor: const Color(0xFF1D4ED8),
                     onChanged: (bool? value) {
                       setState(() {
                         _isOngoing = value ?? true;
@@ -314,7 +319,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                         filled: true,
                         fillColor: Colors.white,
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.calendar_month, color: Color(0xFF047857)),
+                          icon: const Icon(Icons.calendar_month, color: Color(0xFF1D4ED8)),
                           onPressed: () => _pickDate(isStart: false),
                         ),
                         border: OutlineInputBorder(
@@ -407,7 +412,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF047857), // Forest Emerald Experience theme
+                        backgroundColor: const Color(0xFF1D4ED8), // Royal Blue theme
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.0),
@@ -443,7 +448,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                                 title: const Row(
                                   children: [
                                     Icon(Icons.check_circle,
-                                        color: Color(0xFF047857), size: 22),
+                                        color: Color(0xFF1D4ED8), size: 22),
                                     SizedBox(width: 8),
                                     Flexible(
                                       child: Text(
