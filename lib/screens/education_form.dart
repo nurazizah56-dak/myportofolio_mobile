@@ -17,6 +17,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
   // Variabel untuk menyimpan nilai input dari setiap field
   String _institutionName = '';
   String _degree = 'Bachelor (S1)';
+  String _customDegree = '';
   String _location = '';
   String _startYear = '';
   String _endYear = '';
@@ -101,9 +102,36 @@ class _EducationFormPageState extends State<EducationFormPage> {
             _buildDegreeChip('Other', 'Other'),
           ],
         ),
+        if (_degree == 'Other') ...[
+          const SizedBox(height: 10.0),
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: 'e.g. Professional Certification, Bootcamp',
+              labelText: 'Specify Other Degree',
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            onChanged: (String? value) {
+              setState(() {
+                _customDegree = value ?? '';
+              });
+            },
+            validator: (String? value) {
+              if (_degree == 'Other' && (value == null || value.trim().isEmpty)) {
+                return 'Please specify your degree!';
+              }
+              return null;
+            },
+          ),
+        ],
         const SizedBox(height: 8.0),
         Text(
-          'Selected: $_degree',
+          _degree == 'Other' && _customDegree.trim().isNotEmpty
+              ? 'Selected: Other ($_customDegree)'
+              : 'Selected: $_degree',
           style: const TextStyle(
             fontSize: 12.0,
             color: Color(0xFF64748B),
@@ -336,10 +364,16 @@ class _EducationFormPageState extends State<EducationFormPage> {
                         showDialog(
                           context: context,
                           builder: (context) {
+                            // Tentukan teks gelar yang ditampilkan (termasuk deskripsi kustom jika Other)
+                            final displayDegree =
+                                _degree == 'Other' && _customDegree.trim().isNotEmpty
+                                    ? 'Other ($_customDegree)'
+                                    : _degree;
+
                             // Bangun daftar hanya untuk field yang terisi
                             final rows = <Widget>[
                               _dialogRow('Institution', _institutionName),
-                              _dialogRow('Degree', _degree),
+                              _dialogRow('Degree', displayDegree),
                               _dialogRow('Location', _location),
                               _dialogRow('Start Year', _startYear),
                               if (_endYear.trim().isNotEmpty)
@@ -398,6 +432,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                                     setState(() {
                                       _institutionName = '';
                                       _degree = 'Bachelor (S1)';
+                                      _customDegree = '';
                                       _location = '';
                                       _startYear = '';
                                       _endYear = '';
