@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/item_card.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 // Halaman utama portofolio — menampilkan profil pemilik dan menu navigasi
 class MyHomePage extends StatelessWidget {
@@ -58,23 +59,7 @@ class MyHomePage extends StatelessWidget {
     final bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'MyPortfolio',
-          style: TextStyle(
-            color: Color(0xFF1E293B),
-            fontWeight: FontWeight.w800,
-            fontSize: 20.0,
-            letterSpacing: -0.5,
-          ),
-        ),
-        // Putih bersih 
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
-        elevation: 0,
-        shadowColor: Colors.black12,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: const FloatingAppBar(title: 'MyPortfolio'),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(

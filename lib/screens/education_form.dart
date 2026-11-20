@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 // Halaman formulir untuk menambahkan riwayat pendidikan (Education)
 // Menggunakan StatefulWidget karena memerlukan pengelolaan state input form
@@ -145,35 +146,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Education Form',
-          style: TextStyle(
-            color: Color(0xFF1E293B),
-            fontWeight: FontWeight.w800,
-            fontSize: 20.0,
-            letterSpacing: -0.5,
-          ),
-        ),
-        // 3-line hamburger menu icon to open drawer without back button redundancy
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
-        ),
-        // Clean white AppBar consistent with the rest of the application
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
-        elevation: 0,
-        shadowColor: Colors.black12,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: const FloatingAppBar(title: 'Add Education Form'),
       // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
