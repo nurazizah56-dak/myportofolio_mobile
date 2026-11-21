@@ -21,8 +21,10 @@ Bagian ini akan terus diperbarui sampai akhir rangkaian tugas.
 
 | Tahap | Lingkup Pengembangan |
 | :--- | :--- |
-| **Tutorial 8** | Inisialisasi proyek Flutter `myportofolio_mobile`, pemisahan berkas `menu.dart` dari `main.dart`, konversi `MyHomePage` menjadi `StatelessWidget`, serta pembuatan komponen dasar `InfoCard` dan `ItemCard` dengan umpan balik `SnackBar`. |
+| **Tugas 8** | Pembuatan formulir `ExperienceFormPage` dengan Category Chips dua baris terstruktur, integrasi `showDatePicker()` untuk rentang tanggal, *checkbox* status pekerjaan aktif yang menonaktifkan *end date*, validasi ketat format URL dan urutan tanggal, navigasi terintegrasi via kartu aksi beranda dan drawer, penanganan *route stack pop*, pembersihan hasil analisis linter `flutter analyze`, serta penyeragaman konsistensi bahasa antarmuka 100% berbahasa Inggris. Penambahan `FloatingAppBar` berbentuk kapsul melengkung dengan hamburger menu dan avatar profil *NA*, serta kolom input kondisional *Specify Other Degree* pada `EducationFormPage`. |
+| **Tutorial 09** | Implementasi formulir `EducationFormPage` berbasis `StatefulWidget`, `Form`, dan `GlobalKey<FormState>`, penerapan navigasi menu samping `LeftDrawer`, dialog ringkasan `AlertDialog`, serta refaktorisasi struktur berkas ke direktori modular `lib/screens/` dan `lib/widgets/`. |
 | **Tugas 7** | Kustomisasi profil pemilik portofolio (NPM, Nama, Kelas), penambahan tombol menu terstruktur (Education, Skills, Experience), penerapan hierarki warna semantik (*color grouping*) dengan evaluasi rasio kontras WCAG, optimasi tata letak responsif pada desktop dan viewport mobile dengan lebar 360 logical pixels, serta integrasi tipografi modern *Plus Jakarta Sans*. |
+| **Tutorial 8** | Inisialisasi proyek Flutter `myportofolio_mobile`, pemisahan berkas `menu.dart` dari `main.dart`, konversi `MyHomePage` menjadi `StatelessWidget`, serta pembuatan komponen dasar `InfoCard` dan `ItemCard` dengan umpan balik `SnackBar`. |
 
 ---
 
@@ -39,8 +41,13 @@ Struktur berkas akan berkembang seiring bertambahnya fitur, tetapi tanggung jawa
 | Lokasi | Fungsi |
 | :--- | :--- |
 | `lib/main.dart` | Titik masuk utama (*entry point*) aplikasi Flutter, konfigurasi tema global Material 3, dan inisialisasi tipografi Google Fonts (*Plus Jakarta Sans*) |
-| `lib/menu.dart` | Logika dan antarmuka halaman utama portofolio (`MyHomePage`), komponen kartu profil (`InfoCard`), tombol aksi (`ItemCard`), dan model data `ItemHomepage` |
-| `pubspec.yaml` | Berkas manifes proyek yang mendefinisikan informasi aplikasi, versi SDK, aset, dan dependensi eksternal (seperti `google_fonts` dan `cupertino_icons`) |
+| `lib/screens/menu.dart` | Halaman beranda utama (`MyHomePage`), kartu profil (`InfoCard`), dan grid tombol navigasi portofolio |
+| `lib/screens/education_form.dart` | Formulir penambahan riwayat pendidikan (`EducationFormPage`) dari Tutorial 09 dengan validasi dan dialog ringkasan |
+| `lib/screens/experience_form.dart` | Formulir penambahan riwayat pengalaman (`ExperienceFormPage`) Tugas 8 dengan Category Chips 2 baris, date picker, validasi URL, dan dialog ringkasan |
+| `lib/widgets/left_drawer.dart` | Komponen bilah menu samping navigasi (*Drawer*) global dengan opsi Home, Add Education, dan Add Experience |
+| `lib/widgets/floating_app_bar.dart` | Komponen bilah atas melayang (*floating pill AppBar*) dengan sudut melengkung, hamburger drawer menu, judul, dan avatar profil (*NA*) |
+| `lib/widgets/item_card.dart` | Widget kartu aksi interaktif berikon (`ItemCard`) dengan penanganan navigasi halaman dan umpan balik `SnackBar` |
+| `pubspec.yaml` | Berkas manifes proyek yang mendefinisikan informasi aplikasi, versi SDK, aset, dan dependensi eksternal |
 | `analysis_options.yaml` | Konfigurasi linter dan aturan analisis statis (*static analysis*) gaya kode Dart resmi |
 | `android/` | Proyek pembungkus *native* Android (konfigurasi Gradle, AndroidManifest, dan build tools) |
 | `ios/` | Proyek pembungkus *native* iOS (konfigurasi workspace Xcode dan plist) |
@@ -88,6 +95,73 @@ Struktur berkas akan berkembang seiring bertambahnya fitur, tetapi tanggung jawa
    ```bash
    flutter analyze
    ```
+
+---
+
+## Tugas 8
+
+### 1. Jelaskan perbedaan antara `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()`. Metode apa yang digunakan untuk membuka formulir dari kartu aksi? Jelaskan juga bagaimana opsi **Home** di drawer membawa pengguna kembali ke halaman utama.
+
+Di Flutter, sistem navigasi halaman dikelola menggunakan struktur tumpukan (*navigation stack / LIFO - Last In, First Out*). Perbedaan ketiga metode tersebut adalah:
+- **`Navigator.push(BuildContext context, Route route)`:** Mendorong (*push*) rute halaman baru ke atas tumpukan navigasi. Halaman sebelumnya tetap tersimpan di dalam memori tepat di bawah rute baru. Dengan metode ini, pengguna dapat kembali ke halaman sebelumnya menggunakan tombol kembali (*back button* pada AppBar atau tombol kembali sistem perangkat).
+- **`Navigator.pushReplacement(BuildContext context, Route route)`:** Menggantikan rute teratas saat ini dengan rute baru. Rute sebelumnya dilepas dari *navigation stack* (sehingga pengguna tidak dapat kembali ke halaman tersebut via tombol kembali), dan sumber daya (*resources*) rute lama akan di-*dispose* setelah proses transisi selesai, bukan berarti seluruh objeknya langsung dihancurkan seketika saat metode dipanggil.
+- **`Navigator.pop(BuildContext context, [T result])`:** Menghapus (*pop*) rute halaman teratas dari tumpukan navigasi, mengembalikan pengguna ke halaman yang berada tepat di bawahnya. Metode ini juga digunakan untuk menutup dialog (`AlertDialog`), menu samping (`Drawer`), atau mengembalikan data hasil ke halaman pemanggil.
+
+**Metode yang Digunakan untuk Membuka Formulir dari Kartu Aksi:**
+Metode yang digunakan pada tombol kartu beranda (`ItemCard`) adalah **`Navigator.push()`**. Hal ini bertujuan agar halaman utama (`MyHomePage`) tetap dipertahankan di dasar tumpukan navigasi, sehingga setelah pengguna selesai melihat formulir atau batal mengisi, pengguna dapat dengan mudah kembali ke halaman beranda menggunakan tombol panah kembali (*leading back arrow*) pada AppBar formulir.
+
+**Bagaimana Opsi Home di Drawer Membawa Pengguna Kembali:**
+Pada komponen `LeftDrawer`, opsi **Home** memanfaatkan **`Navigator.pushReplacement()`** menuju `MyHomePage()`. Pemilihan `pushReplacement()` ini penting untuk mencegah penumpukan halaman utama yang berulang-ulang di atas stack riwayat navigasi (*infinite stack accumulation*) saat pengguna berpindah-pindah antar-layanan via drawer. Selain itu, tepat sebelum navigasi dijalankan, dipanggil `Navigator.pop(context)` untuk menutup Drawer terlebih dahulu. Drawer yang masih terbuka memiliki entri riwayat lokal pada rute aktif (*LocalHistoryEntry*), sehingga jika tidak ditutup terlebih dahulu, tombol kembali akan memproses penutupan Drawer alih-alih kembali ke halaman sebelumnya.
+
+---
+
+### 2. Bagaimana susunan `Scaffold`, `AppBar`, dan `Drawer` membantu menjaga struktur halaman tetap konsisten? Berikan satu contoh penggunaan warna tema portofolio di lebih dari satu halaman.
+
+**Konsistensi Struktur Halaman Melalui `Scaffold`, `AppBar`, dan `Drawer`:**
+- **`Scaffold`:** Bertindak sebagai fondasi arsitektur Material Design yang seragam di seluruh aplikasi. Dengan membungkus setiap layar (`MyHomePage`, `EducationFormPage`, dan `ExperienceFormPage`) dalam `Scaffold`, tata letak dasar aplikasi terbagi secara konsisten ke dalam slot komponen: bilah atas (`appBar`), menu samping (`drawer`), warna dasar latar belakang (`backgroundColor`), serta area konten tubuh (`body`).
+- **`AppBar`:** Memberikan identitas visual dan navigasi yang seragam di bagian atas layar. Seluruh halaman menggunakan komponen `FloatingAppBar` kustom berbentuk kapsul melayang dengan sudut melengkung (`BorderRadius.circular(30)`), latar putih, tipografi judul tebal, tombol hamburger menu (*3-bar icon*) di kiri, dan avatar inisial profil *NA* di kanan.
+- **`Drawer`:** Komponen `LeftDrawer` dibuat sebagai widget terpisah yang modular dan reusable. Dengan memasang widget `LeftDrawer()` yang sama pada properti `drawer` di seluruh `Scaffold`, pengguna mendapatkan akses ke daftar menu navigasi yang identik dan dapat diandalkan dari halaman mana pun.
+
+**Contoh Penggunaan Warna Tema Portofolio di Lebih dari Satu Halaman:**
+Warna tema **Royal Blue (`#1D4ED8`)** digunakan secara konsisten sebagai representasi visual identitas utama aplikasi:
+1. **Pada Halaman Utama (`menu.dart`):** Digunakan sebagai warna latar kartu aksi `"View Education"`.
+2. **Pada Bilah Menu Samping (`left_drawer.dart`):** Digunakan pada gradien header `LeftDrawer` (dari `#1D4ED8` ke `#3B82F6`).
+3. **Pada Halaman Formulir (`education_form.dart` & `experience_form.dart`):** Digunakan secara spesifik sebagai penanda status aktif (*selected state*) pada *Degree Chips* (formulir Education) dan *Category Chips* (formulir Experience) — di mana chip yang tidak dipilih tetap berlatar putih dengan batas border abu-abu netral (`#CBD5E1`) — serta sebagai warna latar tombol utama **Save** di kedua formulir.
+
+---
+
+### 3. Mengapa tata letak tersebut dipilih untuk formulir? Jelaskan peran widget pengatur jarak dan widget penggulir ketika ruang layar terbatas.
+
+**Alasan Pemilihan Tata Letak Formulir:**
+Tata letak formulir dibangun menggunakan hierarki linier vertikal: `Scaffold` -> `SafeArea` -> `Form` -> `SingleChildScrollView` -> `Padding` -> `Column`. Tata letak vertikal satu kolom ini dipilih karena sangat selaras dengan alur kognitif pengisian data yang berurutan dari atas ke bawah: Judul Peran -> Kategori Pekerjaan -> Tanggal Mulai -> Status Sedang Berjalan -> Tanggal Selesai -> Deskripsi Tugas -> URL Thumbnail -> Tombol Simpan. Tata letak ini memberikan ruang sentuh (*touch target*) yang lapang dan meminimalisir distraksi.
+
+**Peran Widget Pengatur Jarak (`Padding` dan `SizedBox`):**
+- **`Padding`:** Memberikan batas ruang kosong aman di sekeliling formulir (misalnya `symmetric(horizontal: 16.0, vertical: 16.0)`) agar kotak isian input tidak menempel langsung pada bezel fisik perangkat, serta menjaga kenyamanan visual saat form dibuka di layar sempit.
+- **`SizedBox`:** Berfungsi sebagai pemisah dimensi tetap (*fixed distance spacer*) antar-elemen input teks dan antar-baris Category Chips (misalnya `SizedBox(height: 8.0)` dan `SizedBox(width: 8.0)`). `SizedBox` sangat efisien dan ringan (*lightweight*) untuk memisahkan bidang isian agar tidak terlihat padat (*cluttered*).
+
+**Peran Widget Penggulir (`SingleChildScrollView`):**
+Tanpa widget penggulir, formulir dengan konten yang melebihi ruang vertikal yang tersedia berisiko mengalami *bottom overflow*, terutama ketika keyboard virtual muncul dan mengurangi area tampilan yang tersedia. `SingleChildScrollView` memungkinkan pengguna menggulir konten formulir secara vertikal, sehingga seluruh komponen — termasuk pesan kesalahan validasi dan tombol **Save** — tetap dapat dijangkau dalam kondisi ruang layar yang terbatas.
+
+---
+
+### 4. Apa peran `GlobalKey<FormState>`, `validator`, dan `validate()` saat tombol **Simpan** ditekan? Berikan satu contoh nilai yang ditolak oleh validasi dan jelaskan mengapa memilih jenis input atau papan ketik saja belum cukup.
+
+**Peran Komponen Validasi:**
+- **`GlobalKey<FormState>`:** Kunci global unik yang berfungsi sebagai pegangan (*handle*) untuk mengakses status internal dan metode milik widget `Form` dari luar widget tersebut. Melalui objek `_formKey.currentState`, aplikasi dapat memicu fungsi validasi serentak atau melakukan reset nilai seluruh kolom form.
+- **`validator`:** Fungsi logika yang didefinisikan pada setiap `FormField` (misalnya pada `TextFormField`). Fungsi ini memeriksa nilai yang dimasukkan pengguna (`String? value`) berdasarkan aturan bisnis tertentu. Jika nilai tidak valid, fungsi mengembalikan teks pesan galat (*error message*), dan jika valid, mengembalikan nilai `null`.
+- **`validate()`:** Metode bawaan `FormState` yang dipanggil ketika tombol **Save** ditekan (`_formKey.currentState!.validate()`). Metode ini secara otomatis mengeksekusi seluruh fungsi `validator` dari semua kolom input turunan di dalam form. Jika ada input yang tidak valid, `validate()` mengembalikan nilai `false` dan menampilkan pesan galat berwarna merah tepat di bawah kolom terkait. Jika seluruh input valid, `validate()` mengembalikan `true`.
+
+**Contoh Nilai yang Ditolak oleh Validasi:**
+1. **Title / Role:** Input yang dikosongkan atau hanya berisi spasi (`"   "`) akan ditolak dengan pesan: `"Experience title cannot be empty!"`. Input yang panjangnya kurang dari 3 huruf (misalnya `"UI"`) akan ditolak dengan pesan: `"Experience title must be at least 3 characters!"`.
+2. **Thumbnail URL:** Nilai teks tanpa protokol yang sah seperti `"gambar-profil.png"` atau teks sembarang akan ditolak dengan pesan: `"Please enter a valid URL (starting with http:// or https://)"`. Perlu dicatat bahwa validasi ini memeriksa awalan protokol, bukan keseluruhan struktur URL secara penuh (misalnya, host/domain tidak diverifikasi).
+3. **End Date:** Jika tanggal selesai dipilih lebih lampau daripada tanggal mulai (misalnya tanggal mulai 10 Januari 2024, namun tanggal selesai diisi 1 Januari 2023), validasi menolak dengan pesan: `"End date cannot be earlier than start date!"`.
+
+**Mengapa Memilih Jenis Input atau Papan Ketik Saja Belum Cukup:**
+Menentukan jenis papan ketik (seperti `keyboardType: TextInputType.url` atau `TextInputType.number`) hanyalah *fasilitas kenyamanan antarmuka* (*input affordance*) yang menyesuaikan tata letak tombol pada keyboard virtual perangkat. Namun, konfigurasi keyboard:
+1. **Tidak Menjamin Keabsahan Data:** Pengguna tetap dapat menghapus seluruh isian sehingga bidang wajib terkirim dalam keadaan kosong.
+2. **Tidak Melindungi dari Operasi Tempel (*Paste*):** Pengguna dapat menempelkan teks sembarang dari clipboard ke dalam input angka atau URL.
+3. **Tidak Menjalankan Logika Relasional:** Papan ketik tidak mampu memeriksa logika bisnis internal, seperti memastikan bahwa tanggal selesai tidak boleh mendahului tanggal mulai, atau memverifikasi bahwa URL yang dimasukkan memiliki awalan protokol yang valid (`http://` atau `https://`).
+Oleh karena itu, penegakan integritas data yang andal hanya dapat dicapai melalui validasi logika programatis menggunakan `validator` dan `validate()`.
 
 ---
 
@@ -173,7 +247,45 @@ Kita tidak bisa hanya mengandalkan Hot Reload ketika:
 
 ---
 
-## AI Disclosure
+## AI Disclosure — Tugas 8
+
+### Tools AI yang Digunakan
+
+**Claude**
+
+### Bagian yang Dibantu AI dan Kontribusi Saya
+
+| Bagian | Peran AI | Yang Saya Lakukan |
+| :--- | :--- | :--- |
+| **Penyusunan Form dan Navigasi (Tugas 8)** | Membantu menyusun struktur `FormState`, konfigurasi `LeftDrawer`, boilerplate `showDatePicker()`, serta implementasi awal komponen formulir Flutter. | Menentukan kebutuhan dan alur formulir berdasarkan atribut model Django backend, mengembangkan modul *Experience*, mengatur logika checkbox ongoing yang menonaktifkan end date, serta merancang dialog ringkasan menggunakan `AlertDialog`. |
+| **Konsistensi Bahasa** | Membantu menerapkan perubahan string teks antarmuka dan validator berdasarkan arahan yang diberikan. | Menemukan inkonsistensi bahasa pada implementasi sebelumnya dan menentukan penggunaan bahasa Inggris secara konsisten di seluruh antarmuka. Saya juga menentukan penyesuaian teks pada AppBar, tombol aksi, drawer, hint, validator, dan dialog konfirmasi. |
+| **Desain Komponen dan Interaksi** | Memberikan bantuan implementasi kode Flutter berdasarkan arahan desain dan kebutuhan interaksi yang ditentukan. | Menentukan penggunaan Category Chips sebagai pengganti dropdown, menyusun kategori dalam dua baris, menyelaraskan warna Degree Chips dan Category Chips menggunakan Royal Blue (`#1D4ED8`), serta menentukan desain FloatingAppBar berbentuk kapsul dengan ikon hamburger, judul dinamis, dan avatar inisial NA. |
+| **Pengujian dan Perbaikan Kode** | Membantu menganalisis permasalahan navigasi, memberikan saran penggunaan `Navigator.pop()`, dan membantu menindaklanjuti temuan `flutter analyze`. | Menguji navigasi melalui kartu aksi beranda dan drawer di browser Chrome, mengevaluasi perilaku tombol kembali, menerapkan penyesuaian navigasi, serta menjalankan analisis statis untuk memeriksa masalah pada kode. |
+
+### Evaluasi Hasil AI, Perbaikan Manual, dan Keputusan Pengembangan
+
+1. **Penanganan Navigasi dan Entri Riwayat Drawer**
+   - **Keterbatasan AI:** Implementasi awal navigasi pada `left_drawer.dart` langsung memanggil `Navigator.push()` tanpa menutup Drawer terlebih dahulu. Kondisi ini menyebabkan Drawer masih menjadi bagian dari rute aktif sehingga tombol kembali dapat memproses penutupan Drawer sebelum kembali ke halaman sebelumnya.
+   - **Perbaikan Manual:** Setelah menguji perilaku navigasi, saya menambahkan `Navigator.pop(context)` sebelum `Navigator.push()` pada setiap item drawer. Dengan demikian, Drawer ditutup terlebih dahulu sebelum halaman tujuan dibuka.
+
+2. **Penyesuaian Pilihan Kategori dan Konsistensi Visual**
+   - **Proses Pengembangan dan Implementasi:** Pada rancangan awal, saya memilih menggunakan `DropdownButtonFormField` untuk input kategori. Setelah mengevaluasi interaksi dan tampilan formulir, saya memutuskan menggantinya dengan Category Chips karena jumlah pilihan relatif sedikit dan seluruh opsi dapat ditampilkan secara langsung. Saya kemudian mengimplementasikan susunan enam kategori dalam dua baris yang simetris (Baris 1: Full-Time, Part-Time, Internship; Baris 2: Freelance, Volunteer, Research). Saya juga menyelaraskan warna Degree Chips pada formulir Education dan Category Chips pada formulir Experience menggunakan Royal Blue (`#1D4ED8`) sebagai warna aktif saat terpilih (*selected state*).
+
+3. **Kolom Input Kondisional untuk Pilihan Other pada Form Education**
+   - **Keterbatasan AI:** Implementasi awal Degree Selector belum menyediakan kolom deskripsi tambahan ketika pengguna memilih opsi *Other*. Akibatnya, nilai yang tersimpan hanya berupa string `"Other"` tanpa informasi tambahan.
+   - **Perbaikan Manual:** Saya mengidentifikasi kebutuhan informasi tambahan tersebut dan mengarahkan penambahan `TextFormField` kondisional yang hanya ditampilkan ketika `_degree == 'Other'`. Kolom dilengkapi validator wajib isi dan indikator teks *"Selected: Other (<deskripsi>)"* yang diperbarui secara real-time.
+
+### Refleksi Kritis terhadap Penggunaan AI
+
+Dalam pengerjaan Tugas 8, AI membantu mempercepat penerjemahan kebutuhan implementasi menjadi kode Flutter, khususnya pada penyusunan struktur formulir, komponen UI, dan logika validasi. Namun, hasil yang diberikan tidak selalu langsung sesuai dengan kebutuhan aplikasi dan masih memerlukan evaluasi serta penyesuaian.
+
+Saya tetap terlibat dalam menentukan kebutuhan fungsional, mengambil keputusan desain, dan mengevaluasi hasil implementasi. Hal tersebut terlihat dari penyesuaian alur navigasi drawer, perubahan pendekatan input kategori dari dropdown menjadi chips, penyeragaman bahasa antarmuka, serta penambahan input kondisional pada Degree Selector. Saya juga menentukan rancangan visual FloatingAppBar dan konsistensi tampilannya di seluruh halaman.
+
+Penggunaan AI tidak menggantikan proses pengambilan keputusan dan pengujian yang saya lakukan sebagai pengembang. Setiap saran dan kode yang dihasilkan tetap perlu ditinjau berdasarkan kebutuhan aplikasi, diuji secara fungsional, dan disesuaikan sebelum diterapkan. Dengan demikian, AI berperan sebagai alat bantu implementasi, sedangkan perancangan kebutuhan, keputusan pengembangan, dan tanggung jawab terhadap hasil akhir tetap berada pada saya.
+
+---
+
+## AI Disclosure — Tugas 7
 
 ### Tools AI yang Digunakan
 **Claude**
