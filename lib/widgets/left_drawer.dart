@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -34,7 +35,7 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Kelola dan pantau riwayat pendidikan, keahlian, dan portofolio pribadimu!',
+                  'Manage and track your education, skills, and personal portfolio!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -46,7 +47,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Halaman Utama'),
+            title: const Text('Home'),
             // Navigasi ke halaman utama portofolio
             onTap: () {
               Navigator.pushReplacement(
@@ -59,7 +60,7 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.school_outlined),
-            title: const Text('Tambah Education'),
+            title: const Text('Add Education'),
             // Navigasi ke halaman formulir tambah education
             onTap: () {
               // Tutup drawer terlebih dahulu agar modal route drawer tidak tertinggal di stack navigasi
@@ -67,7 +68,24 @@ class LeftDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.work_outline),
+            title: const Text('Add Experience'),
+            // Navigasi ke halaman formulir tambah experience
+            onTap: () {
+              // Tutup drawer terlebih dahulu agar modal route drawer tidak tertinggal di stack navigasi
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experience'),
+                  builder: (context) => const ExperienceFormPage(),
                 ),
               );
             },

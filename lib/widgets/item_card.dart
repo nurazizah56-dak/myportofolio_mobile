@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 
 // Model data untuk setiap tombol aksi pada halaman utama
 class ItemHomepage {
@@ -51,7 +52,7 @@ class ItemCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   content: Text(
-                    'Kamu telah menekan tombol ${item.name}!',
+                    'You tapped the ${item.name} button!',
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -59,12 +60,21 @@ class ItemCard extends StatelessWidget {
                   ),
                 ),
               );
-            // Navigate ke halaman yang sesuai
-            if (item.name == 'Tambah Education') {
+            // Navigate ke halaman yang sesuai dengan named route untuk riwayat browser Chrome
+            if (item.name == 'Add Education' || item.name == 'Tambah Education') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
+                ),
+              );
+            } else if (item.name == 'Add Experience' || item.name == 'Tambah Experience') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experience'),
+                  builder: (context) => const ExperienceFormPage(),
                 ),
               );
             }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
+import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 
 void main() {
   // Titik masuk utama (entry point) aplikasi Flutter
@@ -28,8 +30,12 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      // Halaman menu utama portofolio
-      home: MyHomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(),
+        '/education': (context) => const EducationFormPage(),
+        '/experience': (context) => const ExperienceFormPage(),
+      },
     );
   }
 }

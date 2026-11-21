@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 // Halaman formulir untuk menambahkan riwayat pendidikan (Education)
 // Menggunakan StatefulWidget karena memerlukan pengelolaan state input form
@@ -16,249 +17,336 @@ class _EducationFormPageState extends State<EducationFormPage> {
 
   // Variabel untuk menyimpan nilai input dari setiap field
   String _institutionName = '';
-  String _degree = 'Sarjana (S1)';
+  String _degree = 'Bachelor (S1)';
+  String _customDegree = '';
   String _location = '';
   String _startYear = '';
   String _endYear = '';
   String _mapsUrl = '';
   String _logo = '';
 
-  // Pilihan jenjang pendidikan (setara dengan field degree di web Django)
-  final List<String> _degreeOptions = [
-    'SD / Sederajat',
-    'SMP / Sederajat',
-    'SMA / SMK / Sederajat',
-    'Diploma (D3/D4)',
-    'Sarjana (S1)',
-    'Magister (S2)',
-    'Doktor (S3)',
-    'Lainnya',
-  ];
+  // Helper widget to build each degree chip item
+  Widget _buildDegreeChip(String shortCode, String fullName) {
+    final bool isSelected = _degree == fullName;
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8.0),
+          onTap: () {
+            setState(() {
+              _degree = fullName;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 9.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFF1D4ED8) : Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFF1D4ED8)
+                    : const Color(0xFFCBD5E1),
+                width: 1.2,
+              ),
+            ),
+            child: Text(
+              shortCode,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? Colors.white : const Color(0xFF1E293B),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 12.5,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Interactive 2-row Degree Chips matching user design specification
+  Widget _buildDegreeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Degree',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1E293B),
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          children: [
+            _buildDegreeChip('SD', 'Elementary School (SD)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('SMP', 'Junior High School (SMP)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('SMA/SMK', 'High School / Vocational (SMA/SMK)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('D3/D4', 'Diploma (D3/D4)'),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          children: [
+            _buildDegreeChip('S1', 'Bachelor (S1)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('S2', 'Master (S2)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('S3', 'Doctorate (S3)'),
+            const SizedBox(width: 6.0),
+            _buildDegreeChip('Other', 'Other'),
+          ],
+        ),
+        if (_degree == 'Other') ...[
+          const SizedBox(height: 10.0),
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: 'e.g. Professional Certification, Bootcamp',
+              labelText: 'Specify Other Degree',
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            onChanged: (String? value) {
+              setState(() {
+                _customDegree = value ?? '';
+              });
+            },
+            validator: (String? value) {
+              if (_degree == 'Other' && (value == null || value.trim().isEmpty)) {
+                return 'Please specify your degree!';
+              }
+              return null;
+            },
+          ),
+        ],
+        const SizedBox(height: 8.0),
+        Text(
+          _degree == 'Other' && _customDegree.trim().isNotEmpty
+              ? 'Selected: Other ($_customDegree)'
+              : 'Selected: $_degree',
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Color(0xFF64748B),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Education Form',
-          style: TextStyle(
-            color: Color(0xFF1E293B),
-            fontWeight: FontWeight.w800,
-            fontSize: 20.0,
-            letterSpacing: -0.5,
-          ),
-        ),
-        // Tombol kembali langsung ke halaman utama
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        // Putih bersih — konsisten dengan tema AppBar di halaman utama
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Color(0xFF1E293B)),
-        elevation: 0,
-        shadowColor: Colors.black12,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: const FloatingAppBar(title: 'Add Education Form'),
       // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // === Institution Name ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Universitas Indonesia',
-                    labelText: 'Institution Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _institutionName = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Institution name tidak boleh kosong!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === Degree (Dropdown, setara Select di web Django) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Degree / Jenjang Pendidikan',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  value: _degree,
-                  // Batasi tinggi popup agar tidak memenuhi layar
-                  menuMaxHeight: 280,
-                  isExpanded: true,
-                  items: _degreeOptions
-                      .map((degree) => DropdownMenuItem(
-                            value: degree,
-                            child: Text(degree),
-                          ))
-                      .toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _degree = newValue!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Location ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Depok, West Java',
-                    labelText: 'Location',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _location = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Lokasi tidak boleh kosong!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === Start Year ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: '2024',
-                    labelText: 'Start Year',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _startYear = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Tahun mulai tidak boleh kosong!';
-                    }
-                    if (int.tryParse(value.trim()) == null) {
-                      return 'Masukkan angka tahun yang valid!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // === End Year (opsional, kosongkan jika masih studi) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: '2028',
-                    labelText: 'End Year (leave blank if ongoing)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _endYear = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Google Maps URL (opsional) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.url,
-                  decoration: InputDecoration(
-                    hintText: 'https://maps.google.com/...',
-                    labelText: 'Google Maps URL',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _mapsUrl = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Logo URL (opsional) ===
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.url,
-                  decoration: InputDecoration(
-                    hintText: 'https://.../logo.png',
-                    labelText: 'Logo URL',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _logo = value!;
-                    });
-                  },
-                ),
-              ),
-
-              // === Tombol Simpan ===
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        Theme.of(context).colorScheme.primary,
+      backgroundColor: const Color(0xFFEFF6FF),
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // === Institution Name ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Universitas Indonesia',
+                      labelText: 'Institution Name',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    onPressed: () {
+                    onChanged: (String? value) {
+                      setState(() {
+                        _institutionName = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Institution name cannot be empty!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === Degree Chips (Replaces Dropdown) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: _buildDegreeSelector(),
+                ),
+
+                // === Location ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Depok, West Java',
+                      labelText: 'Location',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _location = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Location cannot be empty!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === Start Year ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: '2024',
+                      labelText: 'Start Year',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _startYear = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Start year cannot be empty!';
+                      }
+                      if (int.tryParse(value.trim()) == null) {
+                        return 'Please enter a valid year number!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+
+                // === End Year (opsional, kosongkan jika masih studi) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: '2028',
+                      labelText: 'End Year (leave blank if ongoing)',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _endYear = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                // === Google Maps URL (opsional) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
+                    decoration: InputDecoration(
+                      hintText: 'https://maps.google.com/...',
+                      labelText: 'Google Maps URL',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _mapsUrl = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                // === Logo URL (opsional) ===
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
+                    decoration: InputDecoration(
+                      hintText: 'https://.../logo.png',
+                      labelText: 'Logo URL',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _logo = value!;
+                      });
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 16.0),
+
+                // === Save Button ===
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1D4ED8), // Royal Blue Education theme
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                      ),
+                      onPressed: () {
                       // Validasi seluruh field yang memiliki validator
                       if (_formKey.currentState!.validate()) {
                         // Tampilkan pop-up konfirmasi dengan data yang dimasukkan
                         showDialog(
                           context: context,
                           builder: (context) {
+                            // Tentukan teks gelar yang ditampilkan (termasuk deskripsi kustom jika Other)
+                            final displayDegree =
+                                _degree == 'Other' && _customDegree.trim().isNotEmpty
+                                    ? 'Other ($_customDegree)'
+                                    : _degree;
+
                             // Bangun daftar hanya untuk field yang terisi
                             final rows = <Widget>[
                               _dialogRow('Institution', _institutionName),
-                              _dialogRow('Degree', _degree),
+                              _dialogRow('Degree', displayDegree),
                               _dialogRow('Location', _location),
                               _dialogRow('Start Year', _startYear),
                               if (_endYear.trim().isNotEmpty)
@@ -287,7 +375,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
                                   SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
-                                      'Education ditambahkan!',
+                                      'Education Added!',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -316,7 +404,8 @@ class _EducationFormPageState extends State<EducationFormPage> {
                                     _formKey.currentState!.reset();
                                     setState(() {
                                       _institutionName = '';
-                                      _degree = 'Sarjana (S1)';
+                                      _degree = 'Bachelor (S1)';
+                                      _customDegree = '';
                                       _location = '';
                                       _startYear = '';
                                       _endYear = '';
@@ -333,7 +422,11 @@ class _EducationFormPageState extends State<EducationFormPage> {
                     },
                     child: const Text(
                       'Save',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                      ),
                     ),
                   ),
                 ),
@@ -342,8 +435,9 @@ class _EducationFormPageState extends State<EducationFormPage> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Helper: baris label + nilai yang compact untuk AlertDialog
   Widget _dialogRow(String label, String value) {
