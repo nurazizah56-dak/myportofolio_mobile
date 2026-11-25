@@ -1,9 +1,4 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'education.g.dart';
-
 /// Portfolio education entry synchronized with the Django REST Framework API.
-@JsonSerializable(fieldRename: FieldRename.snake)
 class Education {
   const Education({
     this.id,
@@ -17,25 +12,35 @@ class Education {
     this.isOngoing = false,
   });
 
-  factory Education.fromJson(Map<String, dynamic> json) =>
-      _$EducationFromJson(json);
+  factory Education.fromJson(Map<String, dynamic> json) => Education(
+        id: json['id'] as String?,
+        institutionName: json['institution_name'] as String,
+        degree: json['degree'] as String,
+        location: (json['location'] as String?) ?? '',
+        mapsUrl: json['maps_url'] as String?,
+        logo: json['logo'] as String?,
+        startYear: json['start_year'] as int,
+        endYear: json['end_year'] as int?,
+        isOngoing: (json['is_ongoing'] as bool?) ?? false,
+      );
 
-  @JsonKey(includeToJson: false)
   final String? id;
-
   final String institutionName;
   final String degree;
-
-  @JsonKey(defaultValue: '')
   final String location;
-
   final String? mapsUrl;
   final String? logo;
   final int startYear;
   final int? endYear;
-
-  @JsonKey(includeToJson: false, defaultValue: false)
   final bool isOngoing;
 
-  Map<String, dynamic> toJson() => _$EducationToJson(this);
+  Map<String, dynamic> toJson() => {
+        'institution_name': institutionName,
+        'degree': degree,
+        'location': location,
+        if (mapsUrl != null) 'maps_url': mapsUrl,
+        if (logo != null) 'logo': logo,
+        'start_year': startYear,
+        if (endYear != null) 'end_year': endYear,
+      };
 }

@@ -13,7 +13,6 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v2
     with:
-      setup: dart run build_runner build --delete-conflicting-outputs
       coverage_excludes: "**/*.g.dart"
       min_coverage: 0
       timeout_minutes: 15
@@ -28,7 +27,6 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
       - name: Build APK
         run: |
           if [ -n "${{ vars.API_BASE_URL }}" ]; then
