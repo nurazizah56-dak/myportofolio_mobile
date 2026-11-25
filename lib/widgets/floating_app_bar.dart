@@ -15,7 +15,8 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
     return SafeArea(
       bottom: false,
       child: Container(
-        margin: const EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0, bottom: 6.0),
+        margin: const EdgeInsets.only(
+            top: 10.0, left: 16.0, right: 16.0, bottom: 6.0),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -38,7 +39,8 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onPressed: () {
                     Scaffold.of(context).openDrawer();
                   },
-                  tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  tooltip:
+                      MaterialLocalizations.of(context).openAppDrawerTooltip,
                 );
               },
             ),

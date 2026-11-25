@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/models/education.dart';
+import 'package:myportofolio_mobile/services/api_client.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:provider/provider.dart';
 
 // Halaman formulir untuk menambahkan riwayat pendidikan (Education)
 // Menggunakan StatefulWidget karena memerlukan pengelolaan state input form
@@ -24,6 +29,147 @@ class _EducationFormPageState extends State<EducationFormPage> {
   String _endYear = '';
   String _mapsUrl = '';
   String _logo = '';
+  bool _isSubmitting = false;
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final loggedIn = await ensureLoggedIn(context);
+    if (!loggedIn || !mounted) return;
+
+    final token = context.read<AuthState>().token;
+    if (token == null) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final displayDegree = _degree == 'Other' && _customDegree.trim().isNotEmpty
+        ? 'Other ($_customDegree)'
+        : _degree;
+
+    final newEducation = Education(
+      institutionName: _institutionName.trim(),
+      degree: displayDegree,
+      location: _location.trim(),
+      mapsUrl: _mapsUrl.trim().isEmpty ? null : _mapsUrl.trim(),
+      logo: _logo.trim().isEmpty ? null : _logo.trim(),
+      startYear: int.parse(_startYear.trim()),
+      endYear: _endYear.trim().isEmpty ? null : int.parse(_endYear.trim()),
+    );
+
+    try {
+      final created = await context.read<ApiClient>().createEducation(
+            newEducation,
+            token: token,
+          );
+      if (!mounted) return;
+
+      final rows = <Widget>[
+        _dialogRow('Institution', created.institutionName),
+        _dialogRow('Degree', created.degree),
+        _dialogRow('Location', created.location),
+        _dialogRow('Start Year', created.startYear.toString()),
+        if (created.endYear != null)
+          _dialogRow('End Year', created.endYear.toString())
+        else
+          _dialogRow('Status', 'Ongoing'),
+        if ((created.mapsUrl ?? '').isNotEmpty)
+          _dialogRow('Maps URL', created.mapsUrl!),
+        if ((created.logo ?? '').isNotEmpty)
+          _dialogRow('Logo URL', created.logo!),
+      ];
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 40,
+              vertical: 24,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Color(0xFF38BDF8), size: 22),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Education Added!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: SizedBox(
+              width: 360,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: rows,
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+      if (!mounted) return;
+      _formKey.currentState!.reset();
+      setState(() {
+        _institutionName = '';
+        _degree = 'Bachelor (S1)';
+        _customDegree = '';
+        _location = '';
+        _startYear = '';
+        _endYear = '';
+        _mapsUrl = '';
+        _logo = '';
+      });
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) {
+        await context.read<AuthState>().logout();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Session expired. Please log in again.'),
+            ),
+          );
+        await ensureLoggedIn(context);
+      } else {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text('Failed to save education (HTTP ${e.statusCode})'),
+            ),
+          );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
 
   // Helper widget to build each degree chip item
   Widget _buildDegreeChip(String shortCode, String fullName) {
@@ -121,7 +267,8 @@ class _EducationFormPageState extends State<EducationFormPage> {
               });
             },
             validator: (String? value) {
-              if (_degree == 'Other' && (value == null || value.trim().isEmpty)) {
+              if (_degree == 'Other' &&
+                  (value == null || value.trim().isEmpty)) {
                 return 'Please specify your degree!';
               }
               return null;
@@ -154,7 +301,8 @@ class _EducationFormPageState extends State<EducationFormPage> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -324,120 +472,41 @@ class _EducationFormPageState extends State<EducationFormPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1D4ED8), // Royal Blue Education theme
+                        backgroundColor: const Color(
+                            0xFF1D4ED8), // Royal Blue Education theme
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.0),
                         ),
                       ),
-                      onPressed: () {
-                      // Validasi seluruh field yang memiliki validator
-                      if (_formKey.currentState!.validate()) {
-                        // Tampilkan pop-up konfirmasi dengan data yang dimasukkan
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            // Tentukan teks gelar yang ditampilkan (termasuk deskripsi kustom jika Other)
-                            final displayDegree =
-                                _degree == 'Other' && _customDegree.trim().isNotEmpty
-                                    ? 'Other ($_customDegree)'
-                                    : _degree;
-
-                            // Bangun daftar hanya untuk field yang terisi
-                            final rows = <Widget>[
-                              _dialogRow('Institution', _institutionName),
-                              _dialogRow('Degree', displayDegree),
-                              _dialogRow('Location', _location),
-                              _dialogRow('Start Year', _startYear),
-                              if (_endYear.trim().isNotEmpty)
-                                _dialogRow('End Year', _endYear)
-                              else
-                                _dialogRow('Status', 'Ongoing'),
-                              if (_mapsUrl.trim().isNotEmpty)
-                                _dialogRow('Maps URL', _mapsUrl),
-                              if (_logo.trim().isNotEmpty)
-                                _dialogRow('Logo URL', _logo),
-                            ];
-
-                            return AlertDialog(
-                              // Batasi lebar dialog agar tidak meregang di desktop
-                              insetPadding: const EdgeInsets.symmetric(
-                                horizontal: 40,
-                                vertical: 24,
+                      onPressed: _isSubmitting ? null : _submit,
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                            )
+                          : const Text(
+                              'Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
                               ),
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.check_circle,
-                                      color: Color(0xFF38BDF8), size: 22),
-                                  SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      'Education Added!',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              content: SizedBox(
-                                width: 360,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: rows,
-                                  ),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    // Tutup dialog dan reset form
-                                    Navigator.pop(context);
-                                    _formKey.currentState!.reset();
-                                    setState(() {
-                                      _institutionName = '';
-                                      _degree = 'Bachelor (S1)';
-                                      _customDegree = '';
-                                      _location = '';
-                                      _startYear = '';
-                                      _endYear = '';
-                                      _mapsUrl = '';
-                                      _logo = '';
-                                    });
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15.0,
-                      ),
+                            ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // Helper: baris label + nilai yang compact untuk AlertDialog
   Widget _dialogRow(String label, String value) {
