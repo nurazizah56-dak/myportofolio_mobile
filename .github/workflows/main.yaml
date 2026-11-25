@@ -31,6 +31,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - run: yes | flutter doctor --android-licenses || true
       - name: Build APK
         run: |
           if [ -n "${{ vars.API_BASE_URL }}" ]; then
