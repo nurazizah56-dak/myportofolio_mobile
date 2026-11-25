@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
+import 'package:myportofolio_mobile/screens/education_list_screen.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/project_form_screen.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 // Model data untuk setiap tombol aksi pada halaman utama
 class ItemHomepage {
@@ -41,8 +47,28 @@ class ItemCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
-          onTap: () {
-            ScaffoldMessenger.of(context)
+          onTap: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            if (item.name == 'Logout') {
+              final auth = context.read<AuthState>();
+              if (!auth.isLoggedIn) {
+                messenger
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    const SnackBar(content: Text('You are not logged in.')),
+                  );
+                return;
+              }
+              await auth.logout();
+              messenger
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(content: Text('Logged out successfully!')),
+                );
+              return;
+            }
+
+            messenger
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
@@ -61,15 +87,27 @@ class ItemCard extends StatelessWidget {
                 ),
               );
             // Navigate ke halaman yang sesuai dengan named route untuk riwayat browser Chrome
-            if (item.name == 'Add Education' || item.name == 'Tambah Education') {
+            if (item.name == 'View Education') {
               Navigator.push(
                 context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/educations'),
+                  builder: (context) => const EducationListScreen(),
+                ),
+              );
+            } else if (item.name == 'Add Education' ||
+                item.name == 'Tambah Education') {
+              final navigator = Navigator.of(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
                 MaterialPageRoute(
                   settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
                 ),
               );
-            } else if (item.name == 'Add Experience' || item.name == 'Tambah Experience') {
+            } else if (item.name == 'Add Experience' ||
+                item.name == 'Tambah Experience') {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -77,10 +115,29 @@ class ItemCard extends StatelessWidget {
                   builder: (context) => const ExperienceFormPage(),
                 ),
               );
+            } else if (item.name == 'View Projects') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/projects'),
+                  builder: (context) => const ProjectListScreen(),
+                ),
+              );
+            } else if (item.name == 'Add Project') {
+              final navigator = Navigator.of(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/project-form'),
+                  builder: (context) => const ProjectFormScreen(),
+                ),
+              );
             }
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

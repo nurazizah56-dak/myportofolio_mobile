@@ -171,7 +171,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -226,7 +227,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       filled: true,
                       fillColor: Colors.white,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_month, color: Color(0xFF1D4ED8)),
+                        icon: const Icon(Icons.calendar_month,
+                            color: Color(0xFF1D4ED8)),
                         onPressed: () => _pickDate(isStart: true),
                       ),
                       border: OutlineInputBorder(
@@ -261,7 +263,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                     ),
                     subtitle: const Text(
                       'Check if you currently work or participate here',
-                      style: TextStyle(fontSize: 12.0, color: Color(0xFF64748B)),
+                      style:
+                          TextStyle(fontSize: 12.0, color: Color(0xFF64748B)),
                     ),
                     value: _isOngoing,
                     activeColor: const Color(0xFF1D4ED8),
@@ -292,7 +295,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                         filled: true,
                         fillColor: Colors.white,
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.calendar_month, color: Color(0xFF1D4ED8)),
+                          icon: const Icon(Icons.calendar_month,
+                              color: Color(0xFF1D4ED8)),
                           onPressed: () => _pickDate(isStart: false),
                         ),
                         border: OutlineInputBorder(
@@ -321,7 +325,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   child: TextFormField(
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText: 'Describe your responsibilities, achievements, and contributions...',
+                      hintText:
+                          'Describe your responsibilities, achievements, and contributions...',
                       labelText: 'Description',
                       filled: true,
                       fillColor: Colors.white,
@@ -385,7 +390,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1D4ED8), // Royal Blue theme
+                        backgroundColor:
+                            const Color(0xFF1D4ED8), // Royal Blue theme
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14.0),
@@ -400,10 +406,13 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                               final rows = <Widget>[
                                 _dialogRow('Title', _title),
                                 _dialogRow('Category', _category),
-                                _dialogRow('Start Date', _startDateController.text),
+                                _dialogRow(
+                                    'Start Date', _startDateController.text),
                                 _dialogRow(
                                   'End Date',
-                                  _isOngoing ? 'Present (Ongoing)' : _endDateController.text,
+                                  _isOngoing
+                                      ? 'Present (Ongoing)'
+                                      : _endDateController.text,
                                 ),
                                 _dialogRow('Description', _description),
                                 if (_thumbnail.trim().isNotEmpty)
@@ -439,7 +448,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                                   child: SingleChildScrollView(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: rows,
                                     ),
                                   ),

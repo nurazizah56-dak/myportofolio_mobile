@@ -45,6 +45,19 @@ class MyHomePage extends StatelessWidget {
       const Color(0xFF34D399), // Fresh Mint
       textColor: const Color(0xFF0F172A), // Dark Navy
     ),
+    // Kelompok Modul Projects
+    ItemHomepage(
+      'View Projects',
+      Icons.folder_copy,
+      const Color(0xFF0F766E), // Deep Teal
+      textColor: Colors.white,
+    ),
+    ItemHomepage(
+      'Add Project',
+      Icons.add_box,
+      const Color(0xFF2DD4BF), // Bright Teal
+      textColor: const Color(0xFF0F172A), // Dark Navy
+    ),
     // Modul Sistem
     ItemHomepage(
       'Logout',
