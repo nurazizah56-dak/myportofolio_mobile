@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // Komponen AppBar melayang berbentuk kapsul/pill dengan sudut melengkung
-// Menampilkan tombol hamburger drawer, judul halaman, dan avatar inisial
+// Menampilkan tombol kembali / hamburger drawer, judul halaman, dan avatar inisial
 class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool? showBackButton;
+  final VoidCallback? onBack;
 
-  const FloatingAppBar({super.key, required this.title});
+  const FloatingAppBar({
+    super.key,
+    required this.title,
+    this.showBackButton,
+    this.onBack,
+  });
+
+  /// True when this bar is showing the Home/root page.
+  bool get isHome => title == 'MyPortfolio';
 
   @override
   Size get preferredSize => const Size.fromHeight(70.0);
@@ -31,9 +42,28 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: Row(
           children: [
-            // Tombol garis 3 (hamburger menu) untuk membuka LeftDrawer
+            // Tombol Navigasi: Back jika bukan root / canPop, atau Hamburger jika di root
             Builder(
               builder: (BuildContext context) {
+                final bool canPop = Navigator.canPop(context);
+                final bool isHome = title == 'MyPortfolio';
+                final bool shouldShowBack = showBackButton ?? (!isHome || canPop);
+
+                if (shouldShowBack) {
+                  return IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
+                    onPressed: onBack ??
+                        () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go('/');
+                          }
+                        },
+                    tooltip: 'Back',
+                  );
+                }
+
                 return IconButton(
                   icon: const Icon(Icons.menu, color: Color(0xFF1E293B)),
                   onPressed: () {
@@ -61,22 +91,64 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
-            // Avatar lingkaran inisial profil (NA - Nur Azizah)
-            Container(
-              margin: const EdgeInsets.only(right: 6.0),
-              width: 36,
-              height: 36,
-              decoration: const BoxDecoration(
-                color: Color(0xFF0F172A), // Dark navy circle
-                shape: BoxShape.circle,
+            // Tombol langsung ke Home jika berada di sub-halaman
+            if (!isHome)
+              IconButton(
+                icon: const Icon(Icons.home_rounded, color: Color(0xFF1D4ED8)),
+                tooltip: 'Home',
+                onPressed: () {
+                  context.go('/');
+                },
               ),
-              alignment: Alignment.center,
-              child: const Text(
-                'NA',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12.5,
+
+            // Tombol Drawer tambahan jika berada di sub-halaman yang memiliki drawer
+            Builder(
+              builder: (BuildContext context) {
+                final bool canPop = Navigator.canPop(context);
+                final bool isHome = title == 'MyPortfolio';
+                final bool shouldShowBack = showBackButton ?? (!isHome || canPop);
+                final bool hasDrawer =
+                    Scaffold.maybeOf(context)?.hasDrawer ?? false;
+
+                if (shouldShowBack && hasDrawer) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu,
+                        color: Color(0xFF1E293B), size: 22),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    tooltip:
+                        MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+
+            // Avatar lingkaran inisial profil (NA - Nur Azizah)
+            InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () {
+                if (!isHome) {
+                  context.go('/');
+                }
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 6.0),
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF0F172A), // Dark navy circle
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'NA',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12.5,
+                  ),
                 ),
               ),
             ),

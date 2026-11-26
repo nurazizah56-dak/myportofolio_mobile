@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/screens/education_form.dart';
-import 'package:myportofolio_mobile/screens/education_list_screen.dart';
-import 'package:myportofolio_mobile/screens/experience_form.dart';
-import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/screens/login_screen.dart';
-import 'package:myportofolio_mobile/screens/menu.dart';
-import 'package:myportofolio_mobile/screens/project_form_screen.dart';
-import 'package:myportofolio_mobile/screens/project_list_screen.dart';
-import 'package:myportofolio_mobile/screens/skill_form.dart';
-import 'package:myportofolio_mobile/screens/skill_list_screen.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:provider/provider.dart';
@@ -60,14 +52,9 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home'),
-            // Navigasi ke halaman utama portofolio
             onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(),
-                ),
-              );
+              Navigator.pop(context);
+              context.go('/');
             },
           ),
           ListTile(
@@ -75,29 +62,17 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Projects'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/projects'),
-                  builder: (context) => const ProjectListScreen(),
-                ),
-              );
+              context.push('/projects');
             },
           ),
           ListTile(
             leading: const Icon(Icons.add_box_outlined),
             title: const Text('Add Project'),
             onTap: () async {
-              final navigator = Navigator.of(context);
-              navigator.pop();
-              final loggedIn = await ensureLoggedIn(navigator.context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/project-form'),
-                  builder: (context) => const ProjectFormScreen(),
-                ),
-              );
+              Navigator.pop(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
+              context.push('/project-form');
             },
           ),
           ListTile(
@@ -105,31 +80,17 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Education'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/educations'),
-                  builder: (context) => const EducationListScreen(),
-                ),
-              );
+              context.push('/educations');
             },
           ),
           ListTile(
             leading: const Icon(Icons.add_circle_outline),
             title: const Text('Add Education'),
-            // Navigasi ke halaman formulir tambah education
             onTap: () async {
-              final navigator = Navigator.of(context);
-              // Tutup drawer terlebih dahulu agar modal route drawer tidak tertinggal di stack navigasi
-              navigator.pop();
-              final loggedIn = await ensureLoggedIn(navigator.context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/education'),
-                  builder: (context) => const EducationFormPage(),
-                ),
-              );
+              Navigator.pop(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
+              context.push('/education-form');
             },
           ),
           ListTile(
@@ -137,29 +98,17 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Skills'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/skills'),
-                  builder: (context) => const SkillListScreen(),
-                ),
-              );
+              context.push('/skills');
             },
           ),
           ListTile(
             leading: const Icon(Icons.add_task),
             title: const Text('Add Skill'),
             onTap: () async {
-              final navigator = Navigator.of(context);
-              navigator.pop();
-              final loggedIn = await ensureLoggedIn(navigator.context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/skill-form'),
-                  builder: (context) => const SkillFormPage(),
-                ),
-              );
+              Navigator.pop(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
+              context.push('/skill-form');
             },
           ),
           ListTile(
@@ -167,30 +116,17 @@ class LeftDrawer extends StatelessWidget {
             title: const Text('Experience'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/experiences'),
-                  builder: (context) => const ExperienceListScreen(),
-                ),
-              );
+              context.push('/experiences');
             },
           ),
           ListTile(
             leading: const Icon(Icons.note_add_outlined),
             title: const Text('Add Experience'),
-            // Navigasi ke halaman formulir tambah experience
             onTap: () async {
-              final navigator = Navigator.of(context);
-              navigator.pop();
-              final loggedIn = await ensureLoggedIn(navigator.context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/experience'),
-                  builder: (context) => const ExperienceFormPage(),
-                ),
-              );
+              Navigator.pop(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !context.mounted) return;
+              context.push('/experience-form');
             },
           ),
           const Divider(),
