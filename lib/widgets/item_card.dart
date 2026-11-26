@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
 import 'package:myportofolio_mobile/screens/education_list_screen.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
 import 'package:myportofolio_mobile/screens/project_list_screen.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
@@ -106,10 +107,20 @@ class ItemCard extends StatelessWidget {
                   builder: (context) => const EducationFormPage(),
                 ),
               );
-            } else if (item.name == 'Add Experience' ||
-                item.name == 'Tambah Experience') {
+            } else if (item.name == 'View Experience') {
               Navigator.push(
                 context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experiences'),
+                  builder: (context) => const ExperienceListScreen(),
+                ),
+              );
+            } else if (item.name == 'Add Experience' ||
+                item.name == 'Tambah Experience') {
+              final navigator = Navigator.of(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
                 MaterialPageRoute(
                   settings: const RouteSettings(name: '/experience'),
                   builder: (context) => const ExperienceFormPage(),

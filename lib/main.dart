@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
 import 'package:myportofolio_mobile/screens/education_list_screen.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
 import 'package:myportofolio_mobile/screens/project_list_screen.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => MyHomePage(),
           '/educations': (context) => const EducationListScreen(),
           '/education': (context) => const EducationFormPage(),
+          '/experiences': (context) => const ExperienceListScreen(),
           '/experience': (context) => const ExperienceFormPage(),
           '/projects': (context) => const ProjectListScreen(),
           '/project-form': (context) => const ProjectFormScreen(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/education_form.dart';
 import 'package:myportofolio_mobile/screens/education_list_screen.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
 import 'package:myportofolio_mobile/screens/login_screen.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
@@ -131,13 +132,28 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.work_outline),
-            title: const Text('Add Experience'),
-            // Navigasi ke halaman formulir tambah experience
+            title: const Text('Experience'),
             onTap: () {
-              // Tutup drawer terlebih dahulu agar modal route drawer tidak tertinggal di stack navigasi
               Navigator.pop(context);
               Navigator.push(
                 context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/experiences'),
+                  builder: (context) => const ExperienceListScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.note_add_outlined),
+            title: const Text('Add Experience'),
+            // Navigasi ke halaman formulir tambah experience
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              navigator.pop();
+              final loggedIn = await ensureLoggedIn(navigator.context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
                 MaterialPageRoute(
                   settings: const RouteSettings(name: '/experience'),
                   builder: (context) => const ExperienceFormPage(),

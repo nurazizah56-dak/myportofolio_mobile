@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:myportofolio_mobile/models/experience.dart';
+import 'package:myportofolio_mobile/services/api_client.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
+import 'package:myportofolio_mobile/widgets/left_drawer.dart';
+import 'package:provider/provider.dart';
 
 /// Form page for adding personal professional and project experience.
 /// Built with StatefulWidget to manage form inputs, date picker state, and validations.
@@ -23,6 +28,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isOngoing = true;
+  bool _isSubmitting = false;
 
   // Controllers for date input fields
   final TextEditingController _startDateController = TextEditingController();
@@ -33,6 +39,153 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
     _startDateController.dispose();
     _endDateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final loggedIn = await ensureLoggedIn(context);
+    if (!loggedIn || !mounted) return;
+
+    final token = context.read<AuthState>().token;
+    if (token == null) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final newExperience = Experience(
+      title: _title.trim(),
+      description: _description.trim(),
+      category: _category,
+      thumbnail: _thumbnail.trim().isEmpty ? null : _thumbnail.trim(),
+      startedAt: _startDate,
+      endedAt: _isOngoing ? null : _endDate,
+      isOngoing: _isOngoing,
+    );
+
+    try {
+      final created = await context.read<ApiClient>().createExperience(
+            newExperience,
+            token: token,
+          );
+      if (!mounted) return;
+
+      final rows = <Widget>[
+        _dialogRow('Title', created.title),
+        _dialogRow(
+          'Category',
+          created.categoryDisplay.isNotEmpty
+              ? created.categoryDisplay
+              : created.category,
+        ),
+        _dialogRow(
+          'Start Date',
+          created.startedAt != null
+              ? "${created.startedAt!.year}-${created.startedAt!.month.toString().padLeft(2, '0')}-${created.startedAt!.day.toString().padLeft(2, '0')}"
+              : _startDateController.text,
+        ),
+        _dialogRow(
+          'End Date',
+          created.isOngoing || created.endedAt == null
+              ? 'Present (Ongoing)'
+              : "${created.endedAt!.year}-${created.endedAt!.month.toString().padLeft(2, '0')}-${created.endedAt!.day.toString().padLeft(2, '0')}",
+        ),
+        _dialogRow('Description', created.description),
+        if ((created.thumbnail ?? '').isNotEmpty)
+          _dialogRow('Thumbnail URL', created.thumbnail!),
+      ];
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 40,
+              vertical: 24,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Row(
+              children: [
+                Icon(Icons.check_circle, color: Color(0xFF1D4ED8), size: 22),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Experience Added!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: SizedBox(
+              width: 360,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: rows,
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+      if (!mounted) return;
+      _formKey.currentState!.reset();
+      _startDateController.clear();
+      _endDateController.clear();
+      setState(() {
+        _title = '';
+        _description = '';
+        _category = 'Full-Time';
+        _thumbnail = '';
+        _startDate = null;
+        _endDate = null;
+        _isOngoing = true;
+      });
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      if (e.statusCode == 401) {
+        await context.read<AuthState>().logout();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Session expired. Please log in again.'),
+            ),
+          );
+        await ensureLoggedIn(context);
+      } else {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text('Failed to save experience (HTTP ${e.statusCode})'),
+            ),
+          );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   // Opens an interactive Material Date Picker
@@ -397,96 +550,25 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                           borderRadius: BorderRadius.circular(14.0),
                         ),
                       ),
-                      onPressed: () {
-                        // Trigger comprehensive form validation
-                        if (_formKey.currentState!.validate()) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              final rows = <Widget>[
-                                _dialogRow('Title', _title),
-                                _dialogRow('Category', _category),
-                                _dialogRow(
-                                    'Start Date', _startDateController.text),
-                                _dialogRow(
-                                  'End Date',
-                                  _isOngoing
-                                      ? 'Present (Ongoing)'
-                                      : _endDateController.text,
-                                ),
-                                _dialogRow('Description', _description),
-                                if (_thumbnail.trim().isNotEmpty)
-                                  _dialogRow('Thumbnail URL', _thumbnail),
-                              ];
-
-                              return AlertDialog(
-                                insetPadding: const EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 24,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                title: const Row(
-                                  children: [
-                                    Icon(Icons.check_circle,
-                                        color: Color(0xFF1D4ED8), size: 22),
-                                    SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        'Experience Added!',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                content: SizedBox(
-                                  width: 360,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: rows,
-                                    ),
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('OK'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      _formKey.currentState!.reset();
-                                      _startDateController.clear();
-                                      _endDateController.clear();
-                                      setState(() {
-                                        _title = '';
-                                        _description = '';
-                                        _category = 'Full-Time';
-                                        _thumbnail = '';
-                                        _startDate = null;
-                                        _endDate = null;
-                                        _isOngoing = true;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15.0,
-                        ),
-                      ),
+                      onPressed: _isSubmitting ? null : _submit,
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text(
+                              'Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                              ),
+                            ),
                     ),
                   ),
                 ),
