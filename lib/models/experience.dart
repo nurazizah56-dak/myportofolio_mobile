@@ -1,4 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'experience.g.dart';
+
 /// Portfolio experience entry synchronized with the Django REST Framework API.
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Experience {
   const Experience({
     this.id,
@@ -12,37 +17,28 @@ class Experience {
     this.isOngoing = false,
   });
 
-  factory Experience.fromJson(Map<String, dynamic> json) => Experience(
-        id: json['id'] as String?,
-        title: json['title'] as String,
-        description: json['description'] as String,
-        category: json['category'] as String,
-        categoryDisplay: (json['category_display'] as String?) ?? '',
-        thumbnail: json['thumbnail'] as String?,
-        startedAt: json['started_at'] != null
-            ? DateTime.tryParse(json['started_at'] as String)
-            : null,
-        endedAt: json['ended_at'] != null
-            ? DateTime.tryParse(json['ended_at'] as String)
-            : null,
-        isOngoing: (json['is_ongoing'] as bool?) ?? false,
-      );
+  factory Experience.fromJson(Map<String, dynamic> json) =>
+      _$ExperienceFromJson(json);
 
+  @JsonKey(includeToJson: false)
   final String? id;
+
   final String title;
   final String description;
   final String category;
+
+  @JsonKey(includeToJson: false, defaultValue: '')
   final String categoryDisplay;
+
   final String? thumbnail;
+
+  @JsonKey(includeToJson: false)
   final DateTime? startedAt;
+
   final DateTime? endedAt;
+
+  @JsonKey(includeToJson: false, defaultValue: false)
   final bool isOngoing;
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'description': description,
-        'category': category.toLowerCase(),
-        if (thumbnail != null && thumbnail!.isNotEmpty) 'thumbnail': thumbnail,
-        if (endedAt != null) 'ended_at': endedAt!.toIso8601String(),
-      };
+  Map<String, dynamic> toJson() => _$ExperienceToJson(this);
 }

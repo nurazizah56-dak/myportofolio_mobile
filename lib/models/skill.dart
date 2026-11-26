@@ -1,38 +1,36 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'skill.g.dart';
+
 /// Portfolio skill entry synchronized with the Django REST Framework API.
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Skill {
   const Skill({
     this.id,
     required this.name,
-    required this.category,
+    this.category = 'soft',
     required this.score,
     this.order = 0,
     this.percentage,
   });
 
-  factory Skill.fromJson(Map<String, dynamic> json) => Skill(
-        id: json['id'] as String?,
-        name: json['name'] as String,
-        category: (json['category'] as String?) ?? 'soft',
-        score: (json['score'] is num)
-            ? (json['score'] as num).toDouble()
-            : double.tryParse(json['score'].toString()) ?? 0.0,
-        order: (json['order'] as int?) ?? 0,
-        percentage: (json['percentage'] is num)
-            ? (json['percentage'] as num).toDouble()
-            : null,
-      );
+  factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
 
+  @JsonKey(includeToJson: false)
   final String? id;
+
   final String name;
+
+  @JsonKey(defaultValue: 'soft')
   final String category;
+
   final double score;
+
+  @JsonKey(defaultValue: 0)
   final int order;
+
+  @JsonKey(includeToJson: false)
   final double? percentage;
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'category': category.toLowerCase(),
-        'score': score,
-        'order': order,
-      };
+  Map<String, dynamic> toJson() => _$SkillToJson(this);
 }
