@@ -5,6 +5,8 @@ import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
 import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/screens/skill_form.dart';
+import 'package:myportofolio_mobile/screens/skill_list_screen.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +107,24 @@ class ItemCard extends StatelessWidget {
                 MaterialPageRoute(
                   settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
+                ),
+              );
+            } else if (item.name == 'View Skills') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/skills'),
+                  builder: (context) => const SkillListScreen(),
+                ),
+              );
+            } else if (item.name == 'Add Skill' || item.name == 'Add Skills') {
+              final navigator = Navigator.of(context);
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/skill-form'),
+                  builder: (context) => const SkillFormPage(),
                 ),
               );
             } else if (item.name == 'View Experience') {

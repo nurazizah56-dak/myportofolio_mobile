@@ -7,6 +7,8 @@ import 'package:myportofolio_mobile/screens/login_screen.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
 import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/screens/skill_form.dart';
+import 'package:myportofolio_mobile/screens/skill_list_screen.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:provider/provider.dart';
@@ -126,6 +128,36 @@ class LeftDrawer extends StatelessWidget {
                 MaterialPageRoute(
                   settings: const RouteSettings(name: '/education'),
                   builder: (context) => const EducationFormPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.lightbulb_outline),
+            title: const Text('Skills'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/skills'),
+                  builder: (context) => const SkillListScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_task),
+            title: const Text('Add Skill'),
+            onTap: () async {
+              final navigator = Navigator.of(context);
+              navigator.pop();
+              final loggedIn = await ensureLoggedIn(navigator.context);
+              if (!loggedIn || !navigator.mounted) return;
+              navigator.push(
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/skill-form'),
+                  builder: (context) => const SkillFormPage(),
                 ),
               );
             },

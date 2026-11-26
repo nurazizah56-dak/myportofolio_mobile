@@ -32,6 +32,12 @@ class MyHomePage extends StatelessWidget {
       const Color(0xFF7C3AED), // Rich Violet Purple
       textColor: Colors.white,
     ),
+    ItemHomepage(
+      'Add Skill',
+      Icons.auto_awesome,
+      const Color(0xFFC084FC), // Soft Lilac (Terang)
+      textColor: const Color(0xFF0F172A), // Dark Navy (Gelap)
+    ),
     // Kelompok Modul Experience
     ItemHomepage(
       'View Experience',
@@ -49,14 +55,14 @@ class MyHomePage extends StatelessWidget {
     ItemHomepage(
       'View Projects',
       Icons.folder_copy,
-      const Color(0xFF0F766E), // Deep Teal
-      textColor: Colors.white,
+      const Color(0xFFEA580C), // Deep Orange (Gelap)
+      textColor: Colors.white, // White (Terang)
     ),
     ItemHomepage(
       'Add Project',
       Icons.add_box,
-      const Color(0xFF2DD4BF), // Bright Teal
-      textColor: const Color(0xFF0F172A), // Dark Navy
+      const Color(0xFFFBBF24), // Warm Yellow (Terang)
+      textColor: const Color(0xFF0F172A), // Dark Navy (Gelap)
     ),
     // Modul Sistem
     ItemHomepage(

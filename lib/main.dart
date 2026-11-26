@@ -7,6 +7,8 @@ import 'package:myportofolio_mobile/screens/experience_list_screen.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form_screen.dart';
 import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/screens/skill_form.dart';
+import 'package:myportofolio_mobile/screens/skill_list_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
           '/education': (context) => const EducationFormPage(),
           '/experiences': (context) => const ExperienceListScreen(),
           '/experience': (context) => const ExperienceFormPage(),
+          '/skills': (context) => const SkillListScreen(),
+          '/skill-form': (context) => const SkillFormPage(),
           '/projects': (context) => const ProjectListScreen(),
           '/project-form': (context) => const ProjectFormScreen(),
         },

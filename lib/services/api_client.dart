@@ -5,6 +5,7 @@ import 'package:myportofolio_mobile/config.dart';
 import 'package:myportofolio_mobile/models/education.dart';
 import 'package:myportofolio_mobile/models/experience.dart';
 import 'package:myportofolio_mobile/models/project.dart';
+import 'package:myportofolio_mobile/models/skill.dart';
 
 /// Exception thrown when an API request returns a non-2xx status code.
 class ApiException implements Exception {
@@ -115,6 +116,36 @@ class ApiClient {
     _ensureSuccess(response);
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     return Experience.fromJson(decoded);
+  }
+
+  Future<List<Skill>> getSkills() async {
+    final response = await _client.get(
+      _uri('/api/v1/skill/'),
+      headers: const {'Accept': 'application/json'},
+    );
+    _ensureSuccess(response);
+    final decoded = jsonDecode(response.body) as List<dynamic>;
+    return decoded
+        .map((item) => Skill.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Skill> createSkill(
+    Skill skill, {
+    required String token,
+  }) async {
+    final response = await _client.post(
+      _uri('/api/v1/skill/'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Token $token',
+      },
+      body: jsonEncode(skill.toJson()),
+    );
+    _ensureSuccess(response);
+    final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+    return Skill.fromJson(decoded);
   }
 
   Future<String> obtainToken(String username, String password) async {
