@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -79,7 +81,7 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               },
               child: const Text('OK'),
             ),
@@ -87,7 +89,10 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
         ),
       );
       if (!mounted) return;
-      _formKey.currentState!.reset();
+      
+      Router.neglect(context, () {
+        context.go('/projects');
+      });
     } on ApiException catch (e) {
       if (!mounted) return;
       if (e.statusCode == 401) {
@@ -122,10 +127,9 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Project'),
-      ),
+      appBar: const FloatingAppBar(title: 'Add Project'),
       drawer: const LeftDrawer(),
+      backgroundColor: const Color(0xFFEFF6FF),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(

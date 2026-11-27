@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/skill.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
@@ -79,7 +80,9 @@ class _SkillFormPageState extends State<SkillFormPage> {
             actions: [
               TextButton(
                 child: const Text('OK'),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
               ),
             ],
           );
@@ -87,12 +90,9 @@ class _SkillFormPageState extends State<SkillFormPage> {
       );
 
       if (!mounted) return;
-      _formKey.currentState!.reset();
-      setState(() {
-        _name = '';
-        _category = 'soft';
-        _score = 8.0;
-        _order = 0;
+
+      Router.neglect(context, () {
+        context.go('/skills');
       });
     } on ApiException catch (e) {
       if (!mounted) return;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/education.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
@@ -120,7 +121,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],
@@ -129,16 +130,9 @@ class _EducationFormPageState extends State<EducationFormPage> {
       );
 
       if (!mounted) return;
-      _formKey.currentState!.reset();
-      setState(() {
-        _institutionName = '';
-        _degree = 'Bachelor (S1)';
-        _customDegree = '';
-        _location = '';
-        _startYear = '';
-        _endYear = '';
-        _mapsUrl = '';
-        _logo = '';
+
+      Router.neglect(context, () {
+        context.go('/educations');
       });
     } on ApiException catch (e) {
       if (!mounted) return;
@@ -294,7 +288,6 @@ class _EducationFormPageState extends State<EducationFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const FloatingAppBar(title: 'Add Education Form'),
-      // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/experience.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
@@ -57,7 +58,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
     final newExperience = Experience(
       title: _title.trim(),
       description: _description.trim(),
-      category: _category,
+      category: _category.trim().toLowerCase(),
       thumbnail: _thumbnail.trim().isEmpty ? null : _thumbnail.trim(),
       startedAt: _startDate,
       endedAt: _isOngoing ? null : _endDate,
@@ -136,7 +137,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],
@@ -145,17 +146,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
       );
 
       if (!mounted) return;
-      _formKey.currentState!.reset();
-      _startDateController.clear();
-      _endDateController.clear();
-      setState(() {
-        _title = '';
-        _description = '';
-        _category = 'Full-Time';
-        _thumbnail = '';
-        _startDate = null;
-        _endDate = null;
-        _isOngoing = true;
+
+      Router.neglect(context, () {
+        context.go('/experiences');
       });
     } on ApiException catch (e) {
       if (!mounted) return;
