@@ -168,7 +168,10 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Add Project'),
+      appBar: const FloatingAppBar(
+        title: 'Add Project',
+        accentColor: Color(0xFFC2410C),
+      ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: Form(
