@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:provider/provider.dart';
 
 // Komponen AppBar melayang berbentuk kapsul/pill dengan sudut melengkung
 // Menampilkan tombol kembali / hamburger drawer, judul halaman, dan avatar inisial
@@ -7,12 +9,14 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool? showBackButton;
   final VoidCallback? onBack;
+  final Color? accentColor;
 
   const FloatingAppBar({
     super.key,
     required this.title,
     this.showBackButton,
     this.onBack,
+    this.accentColor,
   });
 
   /// True when this bar is showing the Home/root page.
@@ -94,7 +98,8 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
             // Tombol langsung ke Home jika berada di sub-halaman
             if (!isHome)
               IconButton(
-                icon: const Icon(Icons.home_rounded, color: Color(0xFF1D4ED8)),
+                icon: Icon(Icons.home_rounded,
+                    color: accentColor ?? const Color(0xFF1D4ED8)),
                 tooltip: 'Home',
                 onPressed: () {
                   context.go('/');
@@ -125,32 +130,68 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
 
-            // Avatar lingkaran inisial profil (NA - Nur Azizah)
-            InkWell(
-              borderRadius: BorderRadius.circular(18),
-              onTap: () {
-                if (!isHome) {
-                  context.go('/');
+            // Tombol "Masuk" jika belum login, atau Avatar "NA" jika sudah login
+            Builder(
+              builder: (context) {
+                final auth = context.watch<AuthState>();
+                if (!auth.isLoggedIn) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            accentColor ?? const Color(0xFF1D4ED8),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {
+                        context.push('/login');
+                      },
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  );
                 }
-              },
-              child: Container(
-                margin: const EdgeInsets.only(right: 6.0),
-                width: 36,
-                height: 36,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF0F172A), // Dark navy circle
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  'NA',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12.5,
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () {
+                    if (!isHome) {
+                      context.go('/');
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 6.0),
+                    width: 36,
+                    height: 36,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF0F172A), // Dark navy circle
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'NA',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 12.5,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
