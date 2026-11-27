@@ -20,8 +20,9 @@ class ApiException implements Exception {
 
 /// HTTP client for the MyPortfolio Django REST Framework backend.
 class ApiClient {
-  ApiClient({http.Client? client, this.baseUrl = apiBaseUrl})
-      : _client = client ?? http.Client();
+  ApiClient({http.Client? client, String? baseUrl})
+      : _client = client ?? http.Client(),
+        baseUrl = baseUrl ?? apiBaseUrl;
 
   final http.Client _client;
   final String baseUrl;
@@ -119,10 +120,16 @@ class ApiClient {
   }
 
   Future<List<Skill>> getSkills() async {
-    final response = await _client.get(
-      _uri('/api/v1/skill/'),
+    http.Response response = await _client.get(
+      _uri('/api/v1/skills/'),
       headers: const {'Accept': 'application/json'},
     );
+    if (response.statusCode == 404) {
+      response = await _client.get(
+        _uri('/api/v1/skill/'),
+        headers: const {'Accept': 'application/json'},
+      );
+    }
     _ensureSuccess(response);
     final decoded = jsonDecode(response.body) as List<dynamic>;
     return decoded
@@ -134,15 +141,24 @@ class ApiClient {
     Skill skill, {
     required String token,
   }) async {
-    final response = await _client.post(
-      _uri('/api/v1/skill/'),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Token $token',
-      },
-      body: jsonEncode(skill.toJson()),
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token $token',
+    };
+    final body = jsonEncode(skill.toJson());
+    http.Response response = await _client.post(
+      _uri('/api/v1/skills/'),
+      headers: headers,
+      body: body,
     );
+    if (response.statusCode == 404) {
+      response = await _client.post(
+        _uri('/api/v1/skill/'),
+        headers: headers,
+        body: body,
+      );
+    }
     _ensureSuccess(response);
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     return Skill.fromJson(decoded);

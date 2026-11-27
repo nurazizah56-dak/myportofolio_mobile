@@ -2,6 +2,17 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'experience.g.dart';
 
+String _categoryToJson(String category) => category.trim().toLowerCase();
+
+DateTime? _dateTimeFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is DateTime) return value;
+  if (value is String && value.isNotEmpty) {
+    return DateTime.tryParse(value);
+  }
+  return null;
+}
+
 /// Portfolio experience entry synchronized with the Django REST Framework API.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Experience {
@@ -25,6 +36,8 @@ class Experience {
 
   final String title;
   final String description;
+
+  @JsonKey(toJson: _categoryToJson)
   final String category;
 
   @JsonKey(includeToJson: false, defaultValue: '')
@@ -32,9 +45,10 @@ class Experience {
 
   final String? thumbnail;
 
-  @JsonKey(includeToJson: false)
+  @JsonKey(includeToJson: false, fromJson: _dateTimeFromJson)
   final DateTime? startedAt;
 
+  @JsonKey(fromJson: _dateTimeFromJson)
   final DateTime? endedAt;
 
   @JsonKey(includeToJson: false, defaultValue: false)
