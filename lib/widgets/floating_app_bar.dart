@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/utils/web_history.dart';
 import 'package:provider/provider.dart';
 
 // Komponen AppBar melayang berbentuk kapsul/pill dengan sudut melengkung
@@ -46,24 +47,16 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: Row(
           children: [
-            // Tombol Navigasi: Back jika bukan root / canPop, atau Hamburger jika di root
+            // Tombol Navigasi: Back jika bukan root (isHome == false), atau Hamburger jika di root
             Builder(
               builder: (BuildContext context) {
-                final bool canPop = Navigator.canPop(context);
                 final bool isHome = title == 'MyPortfolio';
-                final bool shouldShowBack = showBackButton ?? (!isHome || canPop);
+                final bool shouldShowBack = showBackButton ?? (!isHome);
 
                 if (shouldShowBack) {
                   return IconButton(
                     icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
-                    onPressed: onBack ??
-                        () {
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go('/');
-                          }
-                        },
+                    onPressed: onBack ?? () => appNavigateBack(context),
                     tooltip: 'Back',
                   );
                 }

@@ -61,7 +61,16 @@ GoRouter _buildRouter() {
         path: '/education-detail',
         name: 'education-detail',
         builder: (context, state) {
-          final education = state.extra! as Education;
+          Education? education;
+          final extra = state.extra;
+          if (extra is Education) {
+            education = extra;
+          } else if (extra is Map) {
+            try {
+              education = Education.fromJson(Map<String, dynamic>.from(extra));
+            } catch (_) {}
+          }
+          if (education == null) return const EducationListScreen();
           return EducationDetailScreen(education: education);
         },
       ),
@@ -80,7 +89,17 @@ GoRouter _buildRouter() {
         path: '/experience-detail',
         name: 'experience-detail',
         builder: (context, state) {
-          final experience = state.extra! as Experience;
+          Experience? experience;
+          final extra = state.extra;
+          if (extra is Experience) {
+            experience = extra;
+          } else if (extra is Map) {
+            try {
+              experience =
+                  Experience.fromJson(Map<String, dynamic>.from(extra));
+            } catch (_) {}
+          }
+          if (experience == null) return const ExperienceListScreen();
           return ExperienceDetailScreen(experience: experience);
         },
       ),
@@ -99,7 +118,16 @@ GoRouter _buildRouter() {
         path: '/skill-detail',
         name: 'skill-detail',
         builder: (context, state) {
-          final skill = state.extra! as Skill;
+          Skill? skill;
+          final extra = state.extra;
+          if (extra is Skill) {
+            skill = extra;
+          } else if (extra is Map) {
+            try {
+              skill = Skill.fromJson(Map<String, dynamic>.from(extra));
+            } catch (_) {}
+          }
+          if (skill == null) return const SkillListScreen();
           return SkillDetailScreen(skill: skill);
         },
       ),
@@ -118,7 +146,16 @@ GoRouter _buildRouter() {
         path: '/project-detail',
         name: 'project-detail',
         builder: (context, state) {
-          final project = state.extra! as Project;
+          Project? project;
+          final extra = state.extra;
+          if (extra is Project) {
+            project = extra;
+          } else if (extra is Map) {
+            try {
+              project = Project.fromJson(Map<String, dynamic>.from(extra));
+            } catch (_) {}
+          }
+          if (project == null) return const ProjectListScreen();
           return ProjectDetailScreen(project: project);
         },
       ),
@@ -128,6 +165,7 @@ GoRouter _buildRouter() {
         builder: (context, state) => const ProjectFormScreen(),
       ),
     ],
+    errorBuilder: (context, state) => MyHomePage(),
   );
 }
 
