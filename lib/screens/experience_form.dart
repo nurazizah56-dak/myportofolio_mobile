@@ -310,11 +310,20 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Add Experience Form'),
+      appBar: const FloatingAppBar(
+        title: 'Add Experience Form',
+        accentColor: Color(0xFF047857),
+      ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(
-        child: Form(
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: const Color(0xFF047857),
+                ),
+          ),
+          child: Form(
           key: _formKey,
           child: SingleChildScrollView(
             padding:
@@ -333,6 +342,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF047857), width: 1.8),
                       ),
                     ),
                     onChanged: (String? value) {
@@ -379,6 +393,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF047857), width: 1.8),
                       ),
                     ),
                     validator: (String? value) {
@@ -448,6 +467,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF047857), width: 1.8),
+                        ),
                       ),
                       validator: (String? value) {
                         if (!_isOngoing) {
@@ -479,6 +503,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF047857), width: 1.8),
+                      ),
                     ),
                     onChanged: (String? value) {
                       setState(() {
@@ -506,6 +535,11 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF047857), width: 1.8),
                       ),
                     ),
                     onChanged: (String? value) {
@@ -570,7 +604,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 
   // Helper widget to display clean label and value pairs in the AlertDialog

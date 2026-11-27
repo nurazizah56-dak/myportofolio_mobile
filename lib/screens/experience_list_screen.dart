@@ -38,7 +38,10 @@ class _ExperienceListScreenState extends State<ExperienceListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Experience'),
+      appBar: const FloatingAppBar(
+        title: 'Experience',
+        accentColor: Color(0xFF047857),
+      ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
         body: FutureBuilder<List<Experience>>(

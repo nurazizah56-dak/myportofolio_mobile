@@ -21,7 +21,10 @@ class ExperienceDetailScreen extends StatelessWidget {
         : experience.category.toUpperCase();
 
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Experience Detail'),
+      appBar: const FloatingAppBar(
+        title: 'Experience Detail',
+        accentColor: Color(0xFF047857),
+      ),
       backgroundColor: const Color(0xFFEFF6FF),
         body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
