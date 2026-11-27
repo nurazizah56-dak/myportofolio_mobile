@@ -94,7 +94,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
             ),
             title: const Row(
               children: [
-                Icon(Icons.check_circle, color: Color(0xFF38BDF8), size: 22),
+                Icon(Icons.check_circle, color: Color(0xFF1D4ED8), size: 22),
                 SizedBox(width: 8),
                 Flexible(
                   child: Text(
