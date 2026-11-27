@@ -92,14 +92,14 @@ class ItemCard extends StatelessWidget {
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn) return;
               if (!context.mounted) return;
-              context.push('/education-form');
+              context.pushReplacement('/education-form');
             } else if (item.name == 'View Skills') {
               context.push('/skills');
             } else if (item.name == 'Add Skill' || item.name == 'Add Skills') {
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn) return;
               if (!context.mounted) return;
-              context.push('/skill-form');
+              context.pushReplacement('/skill-form');
             } else if (item.name == 'View Experience') {
               context.push('/experiences');
             } else if (item.name == 'Add Experience' ||
@@ -107,14 +107,14 @@ class ItemCard extends StatelessWidget {
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn) return;
               if (!context.mounted) return;
-              context.push('/experience-form');
+              context.pushReplacement('/experience-form');
             } else if (item.name == 'View Projects') {
               context.push('/projects');
             } else if (item.name == 'Add Project') {
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn) return;
               if (!context.mounted) return;
-              context.push('/project-form');
+              context.pushReplacement('/project-form');
             }
           },
           child: Padding(

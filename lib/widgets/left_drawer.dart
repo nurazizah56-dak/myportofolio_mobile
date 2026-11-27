@@ -72,7 +72,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pop(context);
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn || !context.mounted) return;
-              context.push('/project-form');
+              context.pushReplacement('/project-form');
             },
           ),
           ListTile(
@@ -90,7 +90,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pop(context);
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn || !context.mounted) return;
-              context.push('/education-form');
+              context.pushReplacement('/education-form');
             },
           ),
           ListTile(
@@ -108,7 +108,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pop(context);
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn || !context.mounted) return;
-              context.push('/skill-form');
+              context.pushReplacement('/skill-form');
             },
           ),
           ListTile(
@@ -126,7 +126,7 @@ class LeftDrawer extends StatelessWidget {
               Navigator.pop(context);
               final loggedIn = await ensureLoggedIn(context);
               if (!loggedIn || !context.mounted) return;
-              context.push('/experience-form');
+              context.pushReplacement('/experience-form');
             },
           ),
           const Divider(),

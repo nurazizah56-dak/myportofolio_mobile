@@ -18,6 +18,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password = '';
   bool _isSubmitting = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // If Chrome Back lands us here when already logged in, pop immediately.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final auth = context.read<AuthState>();
+      if (auth.isLoggedIn && context.canPop()) {
+        context.pop(true);
+      } else if (auth.isLoggedIn) {
+        context.go('/');
+      }
+    });
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() {
@@ -26,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await context.read<AuthState>().login(_username, _password);
       if (!mounted) return;
-      Navigator.of(context).pop(true);
+      context.pop(true);
     } on ApiException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
