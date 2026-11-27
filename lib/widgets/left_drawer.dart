@@ -136,12 +136,7 @@ class LeftDrawer extends StatelessWidget {
               title: const Text('Login'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
+                context.push('/login');
               },
             )
           else

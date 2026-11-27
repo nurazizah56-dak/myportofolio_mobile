@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/screens/login_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:provider/provider.dart';
 
-/// Ensures the user is authenticated, pushing [LoginScreen] when needed.
+/// Ensures the user is authenticated, pushing [LoginScreen] via GoRouter when needed.
 Future<bool> ensureLoggedIn(BuildContext context) async {
   if (context.read<AuthState>().isLoggedIn) {
     return true;
   }
-  final loggedIn = await Navigator.push<bool>(
-    context,
-    MaterialPageRoute(builder: (_) => const LoginScreen()),
-  );
+  final loggedIn = await context.push<bool>('/login');
   return loggedIn ?? false;
 }
