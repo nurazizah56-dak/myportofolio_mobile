@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myportofolio_mobile/config.dart';
 import 'package:myportofolio_mobile/models/education.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
@@ -7,9 +9,24 @@ class EducationDetailScreen extends StatelessWidget {
 
   final Education education;
 
-  bool get _isLogoUrl {
+  String? get _resolvedLogoUrl {
+    final logo = education.logo?.trim();
+    if (logo == null || logo.isEmpty) return null;
+    if (logo.startsWith('http://') || logo.startsWith('https://')) {
+      return logo;
+    }
+    if (logo.startsWith('/')) {
+      return '$apiBaseUrl$logo';
+    }
+    return null;
+  }
+
+  bool get _isSingleEmoji {
     final logo = education.logo?.trim() ?? '';
-    return logo.startsWith('http://') || logo.startsWith('https://');
+    return logo.isNotEmpty &&
+        !logo.startsWith('/') &&
+        !logo.startsWith('http') &&
+        logo.length <= 4;
   }
 
   @override
@@ -20,7 +37,7 @@ class EducationDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: FloatingAppBar(title: education.institutionName),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -31,34 +48,62 @@ class EducationDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (_isLogoUrl) ...[
+                if (_resolvedLogoUrl != null) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      education.logo!,
+                    child: Container(
                       width: double.infinity,
-                      height: 180,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        width: double.infinity,
-                        height: 120,
-                        color: Colors.grey.shade200,
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.school_outlined,
-                          size: 48,
-                          color: Colors.grey,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      alignment: Alignment.center,
+                      child: Image.network(
+                        _resolvedLogoUrl!,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: double.infinity,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDBEAFE),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.school_outlined,
+                            size: 56,
+                            color: Color(0xFF1D4ED8),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                ] else if ((education.logo ?? '').trim().isNotEmpty) ...[
+                ] else if (_isSingleEmoji) ...[
                   Text(
                     education.logo!.trim(),
-                    style: const TextStyle(fontSize: 36),
+                    style: const TextStyle(fontSize: 48),
                   ),
                   const SizedBox(height: 12),
+                ] else ...[
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDBEAFE),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.school_outlined,
+                      size: 56,
+                      color: Color(0xFF1D4ED8),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                 ],
                 Text(
                   education.institutionName,
@@ -103,6 +148,23 @@ class EducationDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1D4ED8),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () => context.pop(),
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('Back to List'),
+                  ),
+                ),
               ],
             ),
           ),

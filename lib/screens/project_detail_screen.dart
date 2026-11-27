@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 class ProjectDetailScreen extends StatelessWidget {
   const ProjectDetailScreen({required this.project, super.key});
@@ -9,10 +11,9 @@ class ProjectDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(project.title),
-      ),
-      body: SingleChildScrollView(
+      appBar: FloatingAppBar(title: project.title),
+      backgroundColor: const Color(0xFFEFF6FF),
+        body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,6 +83,23 @@ class ProjectDetailScreen extends StatelessWidget {
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 decoration: TextDecoration.underline,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEA580C),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => context.pop(),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Back to List'),
               ),
             ),
           ],

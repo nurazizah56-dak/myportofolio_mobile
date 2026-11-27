@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
-import 'package:myportofolio_mobile/screens/project_detail_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -32,9 +33,10 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Projects')),
+      appBar: const FloatingAppBar(title: 'Projects'),
       drawer: const LeftDrawer(),
-      body: FutureBuilder<List<Project>>(
+      backgroundColor: const Color(0xFFEFF6FF),
+        body: FutureBuilder<List<Project>>(
         future: _projectsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -118,12 +120,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProjectDetailScreen(project: project),
-                        ),
-                      );
+                      context.push('/project-detail', extra: project);
                     },
                   ),
                 );

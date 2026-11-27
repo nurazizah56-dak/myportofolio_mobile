@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/experience.dart';
-import 'package:myportofolio_mobile/screens/experience_detail_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
@@ -41,7 +41,7 @@ class _ExperienceListScreenState extends State<ExperienceListScreen> {
       appBar: const FloatingAppBar(title: 'Experience'),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: FutureBuilder<List<Experience>>(
+        body: FutureBuilder<List<Experience>>(
         future: _experiencesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -141,13 +141,7 @@ class _ExperienceListScreenState extends State<ExperienceListScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ExperienceDetailScreen(experience: exp),
-                        ),
-                      );
+                      context.push('/experience-detail', extra: exp);
                     },
                   ),
                 );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/skill.dart';
-import 'package:myportofolio_mobile/screens/skill_detail_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
@@ -36,7 +36,7 @@ class _SkillListScreenState extends State<SkillListScreen> {
       appBar: const FloatingAppBar(title: 'Skills'),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: FutureBuilder<List<Skill>>(
+        body: FutureBuilder<List<Skill>>(
         future: _skillsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -133,12 +133,7 @@ class _SkillListScreenState extends State<SkillListScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SkillDetailScreen(skill: skill),
-                        ),
-                      );
+                      context.push('/skill-detail', extra: skill);
                     },
                   ),
                 );

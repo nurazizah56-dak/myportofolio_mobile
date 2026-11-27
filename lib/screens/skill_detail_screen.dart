@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/skill.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
@@ -15,7 +16,7 @@ class SkillDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: const FloatingAppBar(title: 'Skill Detail'),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -107,7 +108,7 @@ class SkillDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.arrow_back),
                     label: const Text('Back to List'),
                   ),

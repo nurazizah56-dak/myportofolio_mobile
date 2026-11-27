@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/experience.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
@@ -23,7 +24,7 @@ class ExperienceDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: const FloatingAppBar(title: 'Experience Detail'),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -143,7 +144,7 @@ class ExperienceDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                     icon: const Icon(Icons.arrow_back),
                     label: const Text('Back to List'),
                   ),

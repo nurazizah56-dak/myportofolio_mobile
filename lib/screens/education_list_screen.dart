@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/education.dart';
-import 'package:myportofolio_mobile/screens/education_detail_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
@@ -36,7 +36,7 @@ class _EducationListScreenState extends State<EducationListScreen> {
       appBar: const FloatingAppBar(title: 'Education'),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-      body: FutureBuilder<List<Education>>(
+        body: FutureBuilder<List<Education>>(
         future: _educationsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -132,12 +132,7 @@ class _EducationListScreenState extends State<EducationListScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EducationDetailScreen(education: edu),
-                        ),
-                      );
+                      context.push('/education-detail', extra: edu);
                     },
                   ),
                 );
