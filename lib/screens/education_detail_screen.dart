@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/config.dart';
 import 'package:myportofolio_mobile/models/education.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
@@ -148,23 +147,7 @@ class EducationDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1D4ED8),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.arrow_back),
-                    label: const Text('Back to List'),
-                  ),
-                ),
+                const SizedBox(height: 16),
               ],
             ),
           ),

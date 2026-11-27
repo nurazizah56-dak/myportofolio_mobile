@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
-import 'package:myportofolio_mobile/utils/web_history.dart';
 import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 class ProjectDetailScreen extends StatelessWidget {
@@ -100,23 +98,7 @@ class ProjectDetailScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC2410C), // Oranye
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () => appNavigateBack(context),
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Back to List'),
-              ),
-            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
