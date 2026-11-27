@@ -145,120 +145,154 @@ class _SkillFormPageState extends State<SkillFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Add Skill'),
+      appBar: const FloatingAppBar(
+        title: 'Add Skill',
+        accentColor: Color(0xFF7C3AED),
+      ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Skill Name',
-                    hintText: 'e.g. Flutter, Django, Python',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
-                  ),
-                  onChanged: (val) => setState(() => _name = val),
-                  validator: (val) =>
-                      (val == null || val.trim().isEmpty) ? 'Skill name cannot be empty!' : null,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: const Color(0xFF7C3AED),
                 ),
-                const SizedBox(height: 16.0),
-                const Text('Category', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                const SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ChoiceChip(
-                        label: const Center(child: Text('Soft Skill')),
-                        selected: _category == 'soft',
-                        selectedColor: const Color(0xFF7C3AED),
-                        labelStyle: TextStyle(
-                          color: _category == 'soft' ? Colors.white : const Color(0xFF1E293B),
-                          fontWeight: FontWeight.bold,
-                        ),
-                        onSelected: (selected) {
-                          if (selected) setState(() => _category = 'soft');
-                        },
+          ),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Skill Name',
+                      hintText: 'e.g. Flutter, Django, Python',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF7C3AED), width: 1.8),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ChoiceChip(
-                        label: const Center(child: Text('Hard Skill')),
-                        selected: _category == 'hard',
-                        selectedColor: const Color(0xFF7C3AED),
-                        labelStyle: TextStyle(
-                          color: _category == 'hard' ? Colors.white : const Color(0xFF1E293B),
-                          fontWeight: FontWeight.bold,
-                        ),
-                        onSelected: (selected) {
-                          if (selected) setState(() => _category = 'hard');
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16.0),
-                Text('Proficiency Score: ${_score.toStringAsFixed(1)} / 10.0',
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                Slider(
-                  value: _score,
-                  min: 0.0,
-                  max: 10.0,
-                  divisions: 20,
-                  activeColor: const Color(0xFF7C3AED),
-                  label: _score.toStringAsFixed(1),
-                  onChanged: (val) => setState(() => _score = val),
-                ),
-                const SizedBox(height: 12.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Display Order',
-                    hintText: 'e.g. 1',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                    onChanged: (val) => setState(() => _name = val),
+                    validator: (val) => (val == null || val.trim().isEmpty)
+                        ? 'Skill name cannot be empty!'
+                        : null,
                   ),
-                  keyboardType: TextInputType.number,
-                  initialValue: '0',
-                  onChanged: (val) => setState(() => _order = int.tryParse(val) ?? 0),
-                ),
-                const SizedBox(height: 24.0),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF7C3AED),
-                      padding: const EdgeInsets.symmetric(vertical: 14.0),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-                    ),
-                    onPressed: _isSubmitting ? null : _submit,
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text(
-                            'Save Skill',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                            ),
+                  const SizedBox(height: 16.0),
+                  const Text('Category',
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ChoiceChip(
+                          label: const Center(child: Text('Soft Skill')),
+                          selected: _category == 'soft',
+                          selectedColor: const Color(0xFF7C3AED),
+                          labelStyle: TextStyle(
+                            color: _category == 'soft'
+                                ? Colors.white
+                                : const Color(0xFF1E293B),
+                            fontWeight: FontWeight.bold,
                           ),
+                          onSelected: (selected) {
+                            if (selected) setState(() => _category = 'soft');
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ChoiceChip(
+                          label: const Center(child: Text('Hard Skill')),
+                          selected: _category == 'hard',
+                          selectedColor: const Color(0xFF7C3AED),
+                          labelStyle: TextStyle(
+                            color: _category == 'hard'
+                                ? Colors.white
+                                : const Color(0xFF1E293B),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          onSelected: (selected) {
+                            if (selected) setState(() => _category = 'hard');
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16.0),
+                  Text(
+                      'Proficiency Score: ${_score.toStringAsFixed(1)} / 10.0',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 14)),
+                  Slider(
+                    value: _score,
+                    min: 0.0,
+                    max: 10.0,
+                    divisions: 20,
+                    activeColor: const Color(0xFF7C3AED),
+                    label: _score.toStringAsFixed(1),
+                    onChanged: (val) => setState(() => _score = val),
+                  ),
+                  const SizedBox(height: 12.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Display Order',
+                      hintText: 'e.g. 1',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(
+                            color: Color(0xFF7C3AED), width: 1.8),
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    initialValue: '0',
+                    onChanged: (val) =>
+                        setState(() => _order = int.tryParse(val) ?? 0),
+                  ),
+                  const SizedBox(height: 24.0),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF7C3AED),
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14.0)),
+                      ),
+                      onPressed: _isSubmitting ? null : _submit,
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text(
+                              'Save Skill',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

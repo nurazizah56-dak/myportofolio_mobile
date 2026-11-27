@@ -33,7 +33,10 @@ class _SkillListScreenState extends State<SkillListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Skills'),
+      appBar: const FloatingAppBar(
+        title: 'Skills',
+        accentColor: Color(0xFF7C3AED),
+      ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
         body: FutureBuilder<List<Skill>>(

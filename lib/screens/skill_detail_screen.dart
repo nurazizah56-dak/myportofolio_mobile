@@ -13,7 +13,10 @@ class SkillDetailScreen extends StatelessWidget {
         skill.category.toLowerCase() == 'hard' ? 'Hard Skill' : 'Soft Skill';
 
     return Scaffold(
-      appBar: const FloatingAppBar(title: 'Skill Detail'),
+      appBar: const FloatingAppBar(
+        title: 'Skill Detail',
+        accentColor: Color(0xFF7C3AED),
+      ),
       backgroundColor: const Color(0xFFEFF6FF),
         body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
