@@ -79,7 +79,7 @@ class _SkillFormPageState extends State<SkillFormPage> {
             ),
             actions: [
               TextButton(
-                child: const Text('OK'),
+                child: const Text('OK, View Skills List'),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },

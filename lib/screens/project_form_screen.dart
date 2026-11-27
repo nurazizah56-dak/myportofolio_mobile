@@ -100,7 +100,7 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
               },
-              child: const Text('OK'),
+              child: const Text('OK, View Projects List'),
             ),
           ],
         ),
