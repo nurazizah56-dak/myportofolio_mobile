@@ -26,11 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await context.read<AuthState>().login(_username, _password);
       if (!mounted) return;
-      if (context.canPop()) {
-        context.pop(true);
-      } else {
-        context.go('/');
-      }
+      Navigator.of(context).pop(true);
     } on ApiException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
