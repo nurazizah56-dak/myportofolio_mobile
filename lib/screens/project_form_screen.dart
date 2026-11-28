@@ -106,7 +106,7 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
         ),
       );
       if (!mounted) return;
-      
+
       Router.neglect(context, () {
         context.go('/projects');
       });

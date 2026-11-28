@@ -51,20 +51,25 @@ class _SkillFormPageState extends State<SkillFormPage> {
           );
       if (!mounted) return;
 
-      final categoryLabel =
-          created.category.toLowerCase() == 'hard' ? 'Hard Skill' : 'Soft Skill';
+      final categoryLabel = created.category.toLowerCase() == 'hard'
+          ? 'Hard Skill'
+          : 'Soft Skill';
 
       await showDialog<void>(
         context: context,
         builder: (context) {
           return AlertDialog(
-            insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: const Row(
               children: [
                 Icon(Icons.check_circle, color: Color(0xFF7C3AED), size: 22),
                 SizedBox(width: 8),
-                Text('Skill Added!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Skill Added!',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),
             content: Column(
@@ -102,14 +107,16 @@ class _SkillFormPageState extends State<SkillFormPage> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(content: Text('Session expired. Please log in again.')),
+            const SnackBar(
+                content: Text('Session expired. Please log in again.')),
           );
         await ensureLoggedIn(context);
       } else {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(content: Text('Failed to save skill (HTTP ${e.statusCode})')),
+            SnackBar(
+                content: Text('Failed to save skill (HTTP ${e.statusCode})')),
           );
       }
     } finally {
@@ -130,12 +137,18 @@ class _SkillFormPageState extends State<SkillFormPage> {
             width: 80,
             child: Text(
               '$label:',
-              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF64748B),
+                  fontWeight: FontWeight.w600),
             ),
           ),
           Text(
             value,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF1E293B), fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF1E293B),
+                fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -227,8 +240,7 @@ class _SkillFormPageState extends State<SkillFormPage> {
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  Text(
-                      'Proficiency Score: ${_score.toStringAsFixed(1)} / 10.0',
+                  Text('Proficiency Score: ${_score.toStringAsFixed(1)} / 10.0',
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 14)),
                   Slider(

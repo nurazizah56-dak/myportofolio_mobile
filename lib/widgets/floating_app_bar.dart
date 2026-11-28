@@ -55,7 +55,8 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
 
                 if (shouldShowBack) {
                   return IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
+                    icon:
+                        const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
                     onPressed: onBack ?? () => appNavigateBack(context),
                     tooltip: 'Back',
                   );
@@ -104,7 +105,8 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
               builder: (BuildContext context) {
                 final bool canPop = Navigator.canPop(context);
                 final bool isHome = title == 'MyPortfolio';
-                final bool shouldShowBack = showBackButton ?? (!isHome || canPop);
+                final bool shouldShowBack =
+                    showBackButton ?? (!isHome || canPop);
                 final bool hasDrawer =
                     Scaffold.maybeOf(context)?.hasDrawer ?? false;
 
@@ -132,8 +134,7 @@ class FloatingAppBar extends StatelessWidget implements PreferredSizeWidget {
                     padding: const EdgeInsets.only(right: 4.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            accentColor ?? const Color(0xFF1D4ED8),
+                        backgroundColor: accentColor ?? const Color(0xFF1D4ED8),
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(

@@ -121,7 +121,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
               TextButton(
                 child: const Text('OK, View Education List'),
                 onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],

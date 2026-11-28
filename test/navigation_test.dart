@@ -58,7 +58,8 @@ void main() {
     expect(find.byType(EducationListScreen), findsNothing);
   });
 
-  testWidgets('GoRouter context.pop() (Browser Back equivalent): Detail → List → Home',
+  testWidgets(
+      'GoRouter context.pop() (Browser Back equivalent): Detail → List → Home',
       (WidgetTester tester) async {
     final mockClient = MockApiClient();
     await tester.pumpWidget(MyApp(apiClient: mockClient));

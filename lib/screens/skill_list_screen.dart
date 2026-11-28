@@ -39,7 +39,7 @@ class _SkillListScreenState extends State<SkillListScreen> {
       ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: FutureBuilder<List<Skill>>(
+      body: FutureBuilder<List<Skill>>(
         future: _skillsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,8 +99,9 @@ class _SkillListScreenState extends State<SkillListScreen> {
               itemCount: skills.length,
               itemBuilder: (context, index) {
                 final skill = skills[index];
-                final categoryLabel =
-                    skill.category.toLowerCase() == 'hard' ? 'Hard Skill' : 'Soft Skill';
+                final categoryLabel = skill.category.toLowerCase() == 'hard'
+                    ? 'Hard Skill'
+                    : 'Soft Skill';
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),

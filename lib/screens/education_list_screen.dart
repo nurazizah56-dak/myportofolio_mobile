@@ -36,7 +36,7 @@ class _EducationListScreenState extends State<EducationListScreen> {
       appBar: const FloatingAppBar(title: 'Education'),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: FutureBuilder<List<Education>>(
+      body: FutureBuilder<List<Education>>(
         future: _educationsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

@@ -324,145 +324,72 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                 ),
           ),
           child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // === Experience Title ===
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'e.g. Software Engineer Intern',
-                      labelText: 'Experience Title / Role',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: const BorderSide(
-                            color: Color(0xFF047857), width: 1.8),
-                      ),
-                    ),
-                    onChanged: (String? value) {
-                      setState(() {
-                        _title = value ?? '';
-                      });
-                    },
-                    validator: (String? value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Experience title cannot be empty!';
-                      }
-                      if (value.trim().length < 3) {
-                        return 'Experience title must be at least 3 characters!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                // === Category Chips ===
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: _buildCategoryChips(),
-                ),
-
-                const SizedBox(height: 6.0),
-
-                // === Start Date Field with showDatePicker() ===
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    controller: _startDateController,
-                    readOnly: true,
-                    onTap: () => _pickDate(isStart: true),
-                    decoration: InputDecoration(
-                      hintText: 'YYYY-MM-DD',
-                      labelText: 'Start Date',
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_month,
-                            color: Color(0xFF047857)),
-                        onPressed: () => _pickDate(isStart: true),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: const BorderSide(
-                            color: Color(0xFF047857), width: 1.8),
-                      ),
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Start date cannot be empty!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                // === Currently Ongoing Checkbox ===
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 4.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(color: const Color(0xFFCBD5E1)),
-                  ),
-                  child: CheckboxListTile(
-                    title: const Text(
-                      'Currently Ongoing',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1E293B),
-                      ),
-                    ),
-                    subtitle: const Text(
-                      'Check if you currently work or participate here',
-                      style:
-                          TextStyle(fontSize: 12.0, color: Color(0xFF64748B)),
-                    ),
-                    value: _isOngoing,
-                    activeColor: const Color(0xFF047857),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _isOngoing = value ?? true;
-                        if (_isOngoing) {
-                          _endDate = null;
-                          _endDateController.clear();
-                        }
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                ),
-
-                // === End Date Field (Disabled if Currently Ongoing) ===
-                if (!_isOngoing)
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // === Experience Title ===
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
-                      controller: _endDateController,
+                      decoration: InputDecoration(
+                        hintText: 'e.g. Software Engineer Intern',
+                        labelText: 'Experience Title / Role',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF047857), width: 1.8),
+                        ),
+                      ),
+                      onChanged: (String? value) {
+                        setState(() {
+                          _title = value ?? '';
+                        });
+                      },
+                      validator: (String? value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Experience title cannot be empty!';
+                        }
+                        if (value.trim().length < 3) {
+                          return 'Experience title must be at least 3 characters!';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  // === Category Chips ===
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: _buildCategoryChips(),
+                  ),
+
+                  const SizedBox(height: 6.0),
+
+                  // === Start Date Field with showDatePicker() ===
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      controller: _startDateController,
                       readOnly: true,
-                      onTap: () => _pickDate(isStart: false),
+                      onTap: () => _pickDate(isStart: true),
                       decoration: InputDecoration(
                         hintText: 'YYYY-MM-DD',
-                        labelText: 'End Date',
+                        labelText: 'Start Date',
                         filled: true,
                         fillColor: Colors.white,
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.calendar_month,
                               color: Color(0xFF047857)),
-                          onPressed: () => _pickDate(isStart: false),
+                          onPressed: () => _pickDate(isStart: true),
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.0),
@@ -474,14 +401,161 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                         ),
                       ),
                       validator: (String? value) {
-                        if (!_isOngoing) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'End date cannot be empty when not ongoing!';
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Start date cannot be empty!';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  // === Currently Ongoing Checkbox ===
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                    ),
+                    child: CheckboxListTile(
+                      title: const Text(
+                        'Currently Ongoing',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1E293B),
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Check if you currently work or participate here',
+                        style:
+                            TextStyle(fontSize: 12.0, color: Color(0xFF64748B)),
+                      ),
+                      value: _isOngoing,
+                      activeColor: const Color(0xFF047857),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _isOngoing = value ?? true;
+                          if (_isOngoing) {
+                            _endDate = null;
+                            _endDateController.clear();
                           }
-                          if (_startDate != null &&
-                              _endDate != null &&
-                              _endDate!.isBefore(_startDate!)) {
-                            return 'End date cannot be earlier than start date!';
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ),
+
+                  // === End Date Field (Disabled if Currently Ongoing) ===
+                  if (!_isOngoing)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        controller: _endDateController,
+                        readOnly: true,
+                        onTap: () => _pickDate(isStart: false),
+                        decoration: InputDecoration(
+                          hintText: 'YYYY-MM-DD',
+                          labelText: 'End Date',
+                          filled: true,
+                          fillColor: Colors.white,
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.calendar_month,
+                                color: Color(0xFF047857)),
+                            onPressed: () => _pickDate(isStart: false),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                                color: Color(0xFF047857), width: 1.8),
+                          ),
+                        ),
+                        validator: (String? value) {
+                          if (!_isOngoing) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'End date cannot be empty when not ongoing!';
+                            }
+                            if (_startDate != null &&
+                                _endDate != null &&
+                                _endDate!.isBefore(_startDate!)) {
+                              return 'End date cannot be earlier than start date!';
+                            }
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+
+                  // === Description ===
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText:
+                            'Describe your responsibilities, achievements, and contributions...',
+                        labelText: 'Description',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF047857), width: 1.8),
+                        ),
+                      ),
+                      onChanged: (String? value) {
+                        setState(() {
+                          _description = value ?? '';
+                        });
+                      },
+                      validator: (String? value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Description cannot be empty!';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+
+                  // === Thumbnail URL (optional) ===
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextFormField(
+                      keyboardType: TextInputType.url,
+                      decoration: InputDecoration(
+                        hintText:
+                            'https://example.com/thumbnail.png (optional)',
+                        labelText: 'Thumbnail URL',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF047857), width: 1.8),
+                        ),
+                      ),
+                      onChanged: (String? value) {
+                        setState(() {
+                          _thumbnail = value ?? '';
+                        });
+                      },
+                      validator: (String? value) {
+                        if (value != null && value.trim().isNotEmpty) {
+                          final Uri? uri = Uri.tryParse(value.trim());
+                          if (uri == null ||
+                              !uri.hasScheme ||
+                              !(uri.scheme == 'http' ||
+                                  uri.scheme == 'https')) {
+                            return 'Please enter a valid URL (starting with http:// or https://)';
                           }
                         }
                         return null;
@@ -489,123 +563,51 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                     ),
                   ),
 
-                // === Description ===
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText:
-                          'Describe your responsibilities, achievements, and contributions...',
-                      labelText: 'Description',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: const BorderSide(
-                            color: Color(0xFF047857), width: 1.8),
-                      ),
-                    ),
-                    onChanged: (String? value) {
-                      setState(() {
-                        _description = value ?? '';
-                      });
-                    },
-                    validator: (String? value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Description cannot be empty!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+                  const SizedBox(height: 16.0),
 
-                // === Thumbnail URL (optional) ===
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.url,
-                    decoration: InputDecoration(
-                      hintText: 'https://example.com/thumbnail.png (optional)',
-                      labelText: 'Thumbnail URL',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        borderSide: const BorderSide(
-                            color: Color(0xFF047857), width: 1.8),
-                      ),
-                    ),
-                    onChanged: (String? value) {
-                      setState(() {
-                        _thumbnail = value ?? '';
-                      });
-                    },
-                    validator: (String? value) {
-                      if (value != null && value.trim().isNotEmpty) {
-                        final Uri? uri = Uri.tryParse(value.trim());
-                        if (uri == null ||
-                            !uri.hasScheme ||
-                            !(uri.scheme == 'http' || uri.scheme == 'https')) {
-                          return 'Please enter a valid URL (starting with http:// or https://)';
-                        }
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16.0),
-
-                // === Save Button ===
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFF047857), // Forest Emerald theme
-                        padding: const EdgeInsets.symmetric(vertical: 14.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.0),
+                  // === Save Button ===
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color(0xFF047857), // Forest Emerald theme
+                          padding: const EdgeInsets.symmetric(vertical: 14.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
                         ),
+                        onPressed: _isSubmitting ? null : _submit,
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                            : const Text(
+                                'Save',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
+                              ),
                       ),
-                      onPressed: _isSubmitting ? null : _submit,
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            )
-                          : const Text(
-                              'Save',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
-                              ),
-                            ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 
   // Helper widget to display clean label and value pairs in the AlertDialog

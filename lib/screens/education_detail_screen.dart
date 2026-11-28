@@ -36,7 +36,7 @@ class EducationDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: FloatingAppBar(title: education.institutionName),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(

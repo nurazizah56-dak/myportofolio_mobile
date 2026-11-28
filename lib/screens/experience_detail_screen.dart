@@ -26,7 +26,7 @@ class ExperienceDetailScreen extends StatelessWidget {
         accentColor: Color(0xFF047857),
       ),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(

@@ -18,7 +18,7 @@ class SkillDetailScreen extends StatelessWidget {
         accentColor: Color(0xFF7C3AED),
       ),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -84,9 +84,11 @@ class SkillDetailScreen extends StatelessWidget {
                 const SizedBox(height: 18),
                 const Divider(),
                 const SizedBox(height: 12),
-                _detailRow('Proficiency Score', '${skill.score} / 10.0', Icons.speed),
+                _detailRow(
+                    'Proficiency Score', '${skill.score} / 10.0', Icons.speed),
                 if (skill.percentage != null)
-                  _detailRow('Percentage', '${skill.percentage}%', Icons.percent),
+                  _detailRow(
+                      'Percentage', '${skill.percentage}%', Icons.percent),
                 _detailRow('Display Order', '${skill.order}', Icons.sort),
                 const SizedBox(height: 14),
                 ClipRRect(
@@ -94,7 +96,8 @@ class SkillDetailScreen extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: (skill.score / 10.0).clamp(0.0, 1.0),
                     backgroundColor: const Color(0xFFE2E8F0),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF7C3AED)),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Color(0xFF7C3AED)),
                     minHeight: 10,
                   ),
                 ),

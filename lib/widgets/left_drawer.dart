@@ -371,8 +371,7 @@ class LeftDrawer extends StatelessWidget {
         title: Text(
           title,
           style: TextStyle(
-            color:
-                isActive ? const Color(0xFF1D4ED8) : const Color(0xFF1E293B),
+            color: isActive ? const Color(0xFF1D4ED8) : const Color(0xFF1E293B),
             fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
             fontSize: 13.5,
           ),

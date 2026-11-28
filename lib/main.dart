@@ -28,12 +28,12 @@ void main() {
 }
 
 /// GoRouter configuration.
-/// 
+///
 /// Alasan migrasi dari Navigator 1.0 ke GoRouter:
 /// MaterialApp(routes:) + Navigator 1.0 secara default memanggil
 /// SystemNavigator.selectSingleEntryHistory(), sehingga browser hanya punya
 /// 1 history entry dan Back Chrome langsung keluar dari localhost.
-/// 
+///
 /// GoRouter (via MaterialApp.router) menggunakan Router API yang sinkron
 /// dengan browser history secara native — setiap context.push() menambah
 /// 1 browser history entry, sehingga Back Chrome = pop alami.

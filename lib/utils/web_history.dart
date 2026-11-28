@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'web_history_stub.dart'
-    if (dart.library.html) 'web_history_html.dart';
+import 'web_history_stub.dart' if (dart.library.html) 'web_history_html.dart';
 
 /// Navigates back in a way that keeps in-app back and browser back
 /// continuous and synchronized without pushing duplicate history entries.

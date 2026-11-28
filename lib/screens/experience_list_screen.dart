@@ -44,7 +44,7 @@ class _ExperienceListScreenState extends State<ExperienceListScreen> {
       ),
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
-        body: FutureBuilder<List<Experience>>(
+      body: FutureBuilder<List<Experience>>(
         future: _experiencesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
