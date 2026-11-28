@@ -1,4 +1,4 @@
-![CI](https://github.com/nurazizah56-dak/myportofolio_mobile/actions/workflows/main.yaml/badge.svg)
+[![CI](https://github.com/nurazizah56-dak/myportofolio_mobile/actions/workflows/main.yaml/badge.svg)](https://github.com/nurazizah56-dak/myportofolio_mobile/actions/workflows/main.yaml)
 
 # MyPortfolio Mobile
 
