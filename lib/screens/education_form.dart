@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/education.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
@@ -93,7 +94,7 @@ class _EducationFormPageState extends State<EducationFormPage> {
             ),
             title: const Row(
               children: [
-                Icon(Icons.check_circle, color: Color(0xFF38BDF8), size: 22),
+                Icon(Icons.check_circle, color: Color(0xFF1D4ED8), size: 22),
                 SizedBox(width: 8),
                 Flexible(
                   child: Text(
@@ -118,9 +119,9 @@ class _EducationFormPageState extends State<EducationFormPage> {
             ),
             actions: [
               TextButton(
-                child: const Text('OK'),
+                child: const Text('OK, View Education List'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],
@@ -129,16 +130,9 @@ class _EducationFormPageState extends State<EducationFormPage> {
       );
 
       if (!mounted) return;
-      _formKey.currentState!.reset();
-      setState(() {
-        _institutionName = '';
-        _degree = 'Bachelor (S1)';
-        _customDegree = '';
-        _location = '';
-        _startYear = '';
-        _endYear = '';
-        _mapsUrl = '';
-        _logo = '';
+
+      Router.neglect(context, () {
+        context.go('/educations');
       });
     } on ApiException catch (e) {
       if (!mounted) return;
@@ -294,7 +288,6 @@ class _EducationFormPageState extends State<EducationFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const FloatingAppBar(title: 'Add Education Form'),
-      // Drawer navigasi konsisten di seluruh halaman aplikasi
       drawer: const LeftDrawer(),
       backgroundColor: const Color(0xFFEFF6FF),
       body: SafeArea(

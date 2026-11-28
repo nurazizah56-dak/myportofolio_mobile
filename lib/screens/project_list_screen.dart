@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
-import 'package:myportofolio_mobile/screens/project_detail_screen.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -32,13 +33,21 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Projects')),
+      appBar: const FloatingAppBar(
+        title: 'Projects',
+        accentColor: Color(0xFFC2410C),
+      ),
       drawer: const LeftDrawer(),
+      backgroundColor: const Color(0xFFEFF6FF),
       body: FutureBuilder<List<Project>>(
         future: _projectsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFFC2410C),
+              ),
+            );
           }
           if (snapshot.hasError) {
             return Center(
@@ -53,6 +62,10 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFC2410C),
+                        foregroundColor: Colors.white,
+                      ),
                       onPressed: _reload,
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
@@ -66,6 +79,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
           final projects = snapshot.data ?? const <Project>[];
           if (projects.isEmpty) {
             return RefreshIndicator(
+              color: const Color(0xFFC2410C),
               onRefresh: _reload,
               child: LayoutBuilder(
                 builder: (context, constraints) => SingleChildScrollView(
@@ -84,6 +98,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
           }
 
           return RefreshIndicator(
+            color: const Color(0xFFC2410C),
             onRefresh: _reload,
             child: ListView.builder(
               padding: const EdgeInsets.all(12),
@@ -92,7 +107,17 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                 final project = projects[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   child: ListTile(
+                    leading: const CircleAvatar(
+                      backgroundColor: Color(0xFFFFEDD5), // Peach muda
+                      child: Icon(
+                        Icons.folder_outlined,
+                        color: Color(0xFFC2410C), // Oranye modul projects
+                      ),
+                    ),
                     title: Text(
                       project.title,
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -103,8 +128,8 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                         const SizedBox(height: 4),
                         Text(
                           project.techStack,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
+                          style: const TextStyle(
+                            color: Color(0xFFC2410C), // Oranye bukan biru
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -118,12 +143,7 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProjectDetailScreen(project: project),
-                        ),
-                      );
+                      context.push('/project-detail', extra: project);
                     },
                   ),
                 );

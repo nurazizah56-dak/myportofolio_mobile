@@ -1,4 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'project.g.dart';
+
 /// Portfolio project synchronized with the Django REST Framework API.
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Project {
   const Project({
     this.id,
@@ -9,27 +14,19 @@ class Project {
     this.projectImageUrl = '',
   });
 
-  factory Project.fromJson(Map<String, dynamic> json) => Project(
-        id: json['id'] as String?,
-        title: json['title'] as String,
-        description: json['description'] as String,
-        techStack: json['tech_stack'] as String,
-        projectUrl: json['project_url'] as String,
-        projectImageUrl: (json['project_image_url'] as String?) ?? '',
-      );
+  factory Project.fromJson(Map<String, dynamic> json) =>
+      _$ProjectFromJson(json);
 
+  @JsonKey(includeToJson: false)
   final String? id;
+
   final String title;
   final String description;
   final String techStack;
   final String projectUrl;
+
+  @JsonKey(defaultValue: '')
   final String projectImageUrl;
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'description': description,
-        'tech_stack': techStack,
-        'project_url': projectUrl,
-        'project_image_url': projectImageUrl,
-      };
+  Map<String, dynamic> toJson() => _$ProjectToJson(this);
 }

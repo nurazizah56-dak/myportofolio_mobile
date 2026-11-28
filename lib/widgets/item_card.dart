@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myportofolio_mobile/screens/education_form.dart';
-import 'package:myportofolio_mobile/screens/education_list_screen.dart';
-import 'package:myportofolio_mobile/screens/experience_form.dart';
-import 'package:myportofolio_mobile/screens/project_form_screen.dart';
-import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
 import 'package:provider/provider.dart';
@@ -86,53 +82,39 @@ class ItemCard extends StatelessWidget {
                   ),
                 ),
               );
-            // Navigate ke halaman yang sesuai dengan named route untuk riwayat browser Chrome
+
+            // Navigasi ke halaman yang sesuai menggunakan go_router
+            // context.push() menambah 1 browser history entry → Back Chrome berfungsi
             if (item.name == 'View Education') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/educations'),
-                  builder: (context) => const EducationListScreen(),
-                ),
-              );
+              context.push('/educations');
             } else if (item.name == 'Add Education' ||
                 item.name == 'Tambah Education') {
-              final navigator = Navigator.of(context);
               final loggedIn = await ensureLoggedIn(context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/education'),
-                  builder: (context) => const EducationFormPage(),
-                ),
-              );
+              if (!loggedIn) return;
+              if (!context.mounted) return;
+              context.pushReplacement('/education-form');
+            } else if (item.name == 'View Skills') {
+              context.push('/skills');
+            } else if (item.name == 'Add Skill' || item.name == 'Add Skills') {
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn) return;
+              if (!context.mounted) return;
+              context.pushReplacement('/skill-form');
+            } else if (item.name == 'View Experience') {
+              context.push('/experiences');
             } else if (item.name == 'Add Experience' ||
                 item.name == 'Tambah Experience') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/experience'),
-                  builder: (context) => const ExperienceFormPage(),
-                ),
-              );
-            } else if (item.name == 'View Projects') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/projects'),
-                  builder: (context) => const ProjectListScreen(),
-                ),
-              );
-            } else if (item.name == 'Add Project') {
-              final navigator = Navigator.of(context);
               final loggedIn = await ensureLoggedIn(context);
-              if (!loggedIn || !navigator.mounted) return;
-              navigator.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: '/project-form'),
-                  builder: (context) => const ProjectFormScreen(),
-                ),
-              );
+              if (!loggedIn) return;
+              if (!context.mounted) return;
+              context.pushReplacement('/experience-form');
+            } else if (item.name == 'View Projects') {
+              context.push('/projects');
+            } else if (item.name == 'Add Project') {
+              final loggedIn = await ensureLoggedIn(context);
+              if (!loggedIn) return;
+              if (!context.mounted) return;
+              context.pushReplacement('/project-form');
             }
           },
           child: Padding(

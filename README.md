@@ -1,3 +1,5 @@
+![CI](https://github.com/nurazizah56-dak/myportofolio_mobile/actions/workflows/main.yaml/badge.svg)
+
 # MyPortfolio Mobile
 
 Aplikasi berbasis Flutter yang dirancang sebagai antarmuka klien untuk pengembangan ekosistem portofolio pribadi, dengan Django REST Framework sebagai target integrasi backend.
@@ -21,6 +23,8 @@ Bagian ini akan terus diperbarui sampai akhir rangkaian tugas.
 
 | Tahap | Lingkup Pengembangan |
 | :--- | :--- |
+| **Tugas 9** | Integrasi penuh Flutter ↔ Django REST Framework & Modern Routing: implementasi kelas model `@JsonSerializable` dengan `build_runner` untuk Education, Experience, Project, dan Skill; perluasan `ApiClient` dengan metode GET/POST terautentikasi (`Authorization: Token`) untuk endpoint DRF; pembuatan List Screen (`FutureBuilder` + `RefreshIndicator` + Retry) dan Detail Screen untuk seluruh entitas; refaktor formulir agar memerlukan autentikasi via `ensureLoggedIn()` sebelum pengiriman POST; migrasi navigasi ke `go_router` (`MaterialApp.router`) untuk integrasi penuh dengan *browser history* peramban Web dan konsistensi tombol *Back* (in-app vs browser back); penanganan `ApiException` dan sesi 401; penyeragaman identitas warna aksen per modul (Education: Royal Blue, Experience: Forest Emerald, Skills: Violet Purple, Projects: Deep Orange); serta pembaruan CI/CD pipeline GitHub Actions dengan langkah `build_runner` pada kedua job (`build` dan `build_apk`). |
+| **Tutorial 10** | Integrasi awal Flutter ↔ Django REST Framework: pembuatan model `Education` dan `Project` dengan `fromJson`/`toJson`, setup `ApiClient` dengan `obtainToken` dan `logout`, implementasi `AuthState` via Provider, konfigurasi CI/CD GitHub Actions (`very_good_workflows` + `build_apk` dengan upload artefak APK release), dan aktivasi `TokenAuthentication` pada backend Django untuk endpoint Education. |
 | **Tugas 8** | Pembuatan formulir `ExperienceFormPage` dengan Category Chips dua baris terstruktur, integrasi `showDatePicker()` untuk rentang tanggal, *checkbox* status pekerjaan aktif yang menonaktifkan *end date*, validasi ketat format URL dan urutan tanggal, navigasi terintegrasi via kartu aksi beranda dan drawer, penanganan *route stack pop*, pembersihan hasil analisis linter `flutter analyze`, serta penyeragaman konsistensi bahasa antarmuka 100% berbahasa Inggris. Penambahan `FloatingAppBar` berbentuk kapsul melengkung dengan hamburger menu dan avatar profil *NA*, serta kolom input kondisional *Specify Other Degree* pada `EducationFormPage`. |
 | **Tutorial 09** | Implementasi formulir `EducationFormPage` berbasis `StatefulWidget`, `Form`, dan `GlobalKey<FormState>`, penerapan navigasi menu samping `LeftDrawer`, dialog ringkasan `AlertDialog`, serta refaktorisasi struktur berkas ke direktori modular `lib/screens/` dan `lib/widgets/`. |
 | **Tugas 7** | Kustomisasi profil pemilik portofolio (NPM, Nama, Kelas), penambahan tombol menu terstruktur (Education, Skills, Experience), penerapan hierarki warna semantik (*color grouping*) dengan evaluasi rasio kontras WCAG, optimasi tata letak responsif pada desktop dan viewport mobile dengan lebar 360 logical pixels, serta integrasi tipografi modern *Plus Jakarta Sans*. |
@@ -30,7 +34,9 @@ Bagian ini akan terus diperbarui sampai akhir rangkaian tugas.
 
 ## Deskripsi Proyek
 
-`myportofolio_mobile` adalah aplikasi mobile interaktif yang dibangun menggunakan Flutter Framework dan bahasa pemrograman Dart. Aplikasi menghadirkan dashboard interaktif yang memuat informasi pemilik (NPM, Nama, Kelas) serta menu berikon yang merepresentasikan bagian portofolio, seperti Education, Skills, Experience, dan autentikasi akun.
+`myportofolio_mobile` adalah aplikasi mobile interaktif yang dibangun menggunakan Flutter Framework dan bahasa pemrograman Dart. Aplikasi menghadirkan dashboard pemilik portofolio yang memuat informasi profil (NPM, Nama, dan Kelas), serta fitur pengelolaan data portofolio yang terdiri atas Education, Skills, Experience, dan Projects.
+
+Aplikasi terintegrasi dengan backend Django REST Framework untuk mendukung pengambilan dan pengiriman data melalui API. Aplikasi juga menyediakan autentikasi pengguna agar fitur penambahan data dapat diakses oleh pengguna yang telah login.
 
 ---
 
@@ -40,13 +46,29 @@ Struktur berkas akan berkembang seiring bertambahnya fitur, tetapi tanggung jawa
 
 | Lokasi | Fungsi |
 | :--- | :--- |
-| `lib/main.dart` | Titik masuk utama (*entry point*) aplikasi Flutter, konfigurasi tema global Material 3, dan inisialisasi tipografi Google Fonts (*Plus Jakarta Sans*) |
-| `lib/screens/menu.dart` | Halaman beranda utama (`MyHomePage`), kartu profil (`InfoCard`), dan grid tombol navigasi portofolio |
-| `lib/screens/education_form.dart` | Formulir penambahan riwayat pendidikan (`EducationFormPage`) dari Tutorial 09 dengan validasi dan dialog ringkasan |
-| `lib/screens/experience_form.dart` | Formulir penambahan riwayat pengalaman (`ExperienceFormPage`) Tugas 8 dengan Category Chips 2 baris, date picker, validasi URL, dan dialog ringkasan |
-| `lib/widgets/left_drawer.dart` | Komponen bilah menu samping navigasi (*Drawer*) global dengan opsi Home, Add Education, dan Add Experience |
-| `lib/widgets/floating_app_bar.dart` | Komponen bilah atas melayang (*floating pill AppBar*) dengan sudut melengkung, hamburger drawer menu, judul, dan avatar profil (*NA*) |
+| `lib/main.dart` | Titik masuk utama (*entry point*) aplikasi Flutter, konfigurasi deklaratif `GoRouter` (`MaterialApp.router`), tema global Material 3, dan inisialisasi tipografi Google Fonts (*Plus Jakarta Sans*) |
+| `lib/screens/menu.dart` | Halaman beranda utama (`MyHomePage`), kartu profil (`InfoCard`), dan grid tombol navigasi portofolio dengan identitas warna semantik |
+| `lib/screens/education_list_screen.dart` | Layar daftar riwayat pendidikan berbasis `FutureBuilder`, `RefreshIndicator`, dan tombol reload |
+| `lib/screens/education_detail_screen.dart` | Layar rincian riwayat pendidikan yang menampilkan seluruh informasi entitas (institusi, gelar, periode, lokasi, Maps URL, logo) |
+| `lib/screens/education_form.dart` | Formulir penambahan riwayat pendidikan (`EducationFormPage`) dengan Degree Selector, validasi input, autentikasi sesi, dan dialog ringkasan |
+| `lib/screens/experience_list_screen.dart` | Layar daftar riwayat pengalaman kerja/organisasi dengan status ongoing dan periodisasi |
+| `lib/screens/experience_detail_screen.dart` | Layar rincian pengalaman kerja/organisasi dengan badge kategori dan deskripsi lengkap |
+| `lib/screens/experience_form.dart` | Formulir penambahan riwayat pengalaman (`ExperienceFormPage`) dengan Category Chips 2 baris bertema Forest Emerald, date picker, dan validasi |
+| `lib/screens/skill_list_screen.dart` | Layar daftar keahlian/keterampilan dengan visualisasi kategori (Soft/Hard) dan skor |
+| `lib/screens/skill_detail_screen.dart` | Layar rincian keahlian dengan indikator kemajuan tingkat keahlian (*linear progress indicator*) bertema Violet Purple |
+| `lib/screens/skill_form.dart` | Formulir penambahan keahlian (`SkillFormPage`) dengan pilihan chip kategori, slider kecakapan, dan urutan tampilan |
+| `lib/screens/project_list_screen.dart` | Layar daftar portofolio proyek teknis yang terintegrasi dengan endpoint REST Django |
+| `lib/screens/project_detail_screen.dart` | Layar rincian proyek yang menampilkan pratinjau gambar, deskripsi, tech stack chips, dan tautan URL proyek |
+| `lib/screens/project_form_screen.dart` | Formulir penambahan proyek (`ProjectFormScreen`) dengan validasi URL, border fokus bertema Deep Orange, dan umpan balik tersimpan |
+| `lib/screens/login_screen.dart` | Formulir masuk akun (*LoginScreen*) berbasis token autentikasi DRF yang disajikan sebagai modal in-app yang ramah riwayat navigasi |
+| `lib/services/api_client.dart` | Klien HTTP terpadu untuk komunikasi API backend Django (GET, POST terautentikasi, login token, dan logout) |
+| `lib/services/auth_state.dart` | Pengelola state autentikasi berbasis Provider ChangeNotifier untuk menyimpan token sesi pengguna secara reaktif |
+| `lib/models/` | Definisi kelas model data (`Education`, `Experience`, `Skill`, `Project`) berbasis anotasi `@JsonSerializable` dan generator kode `build_runner` |
+| `lib/widgets/left_drawer.dart` | Komponen bilah menu samping navigasi (*Drawer*) global dengan header Navy solid (`#0D234A`), pengelompokan modul terkategori, dan integrasi rute `GoRouter` |
+| `lib/widgets/floating_app_bar.dart` | Komponen bilah atas melayang (*floating pill AppBar*) dengan navigasi cerdas yang adaptif terhadap tombol *Back* dan drawer |
+| `lib/widgets/auth_guard.dart` | Pelindung rute formulir (`ensureLoggedIn`) yang memastikan pengguna terautentikasi sebelum membuka atau mengirim formulir |
 | `lib/widgets/item_card.dart` | Widget kartu aksi interaktif berikon (`ItemCard`) dengan penanganan navigasi halaman dan umpan balik `SnackBar` |
+| `lib/utils/web_history.dart` | Modul utilitas sinkronisasi riwayat peramban web (`history.back()`) dengan fallback multiplatform untuk memastikan kesinambungan riwayat navigasi (*continuous history*) |
 | `pubspec.yaml` | Berkas manifes proyek yang mendefinisikan informasi aplikasi, versi SDK, aset, dan dependensi eksternal |
 | `analysis_options.yaml` | Konfigurasi linter dan aturan analisis statis (*static analysis*) gaya kode Dart resmi |
 | `android/` | Proyek pembungkus *native* Android (konfigurasi Gradle, AndroidManifest, dan build tools) |
@@ -86,15 +108,226 @@ Struktur berkas akan berkembang seiring bertambahnya fitur, tetapi tanggung jawa
    flutter pub get
    ```
 
-3. Jalankan aplikasi pada peramban Google Chrome:
+3. Hasilkan berkas kode yang di-generate (`*.g.dart`) menggunakan `build_runner`:
    ```bash
-   flutter run -d chrome
+   dart run build_runner build --delete-conflicting-outputs
    ```
 
-4. Periksa kualitas dan kepatuhan sintaks kode:
+4. Jalankan aplikasi pada peramban Google Chrome (dengan koneksi ke backend Django yang sudah di-deploy):
+   ```bash
+   flutter run -d chrome --dart-define=API_BASE_URL=https://nur-azizah56-myportofolio.pws.cs.ui.ac.id
+   ```
+   Atau jalankan terhadap server lokal Django:
+   ```bash
+   flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000
+   ```
+
+5. Periksa kualitas dan kepatuhan sintaks kode:
    ```bash
    flutter analyze
    ```
+
+### Tautan Repositori Backend
+- **Backend Django:** [github.com/nurazizah56-dak/myportofolio](https://github.com/nurazizah56-dak/myportofolio)
+- **API URL (deployed PWS):** `https://nur-azizah56-myportofolio.pws.cs.ui.ac.id`
+
+---
+
+## Arsitektur Navigasi & Integrasi Browser History Web
+
+Pada Tugas 9, sistem navigasi aplikasi dimigrasikan dari Navigator 1.0 konvensional (`MaterialApp(routes:)`) menuju `GoRouter` (`MaterialApp.router`). Perubahan ini dilakukan untuk mengelola rute aplikasi secara deklaratif dan mendukung integrasi navigasi dengan riwayat peramban web.
+
+### 1. Navigasi Home, List, dan Detail
+
+- Navigasi bertingkat `Home → List → Detail` menggunakan `context.push()` sehingga perpindahan halaman menambahkan rute ke tumpukan navigasi.
+- Tombol Back in-app pada `FloatingAppBar` dan layar detail menggunakan mekanisme navigasi kembali yang disesuaikan dengan platform.
+- Perilaku tombol Back in-app dan Back Chrome diuji pada beberapa urutan navigasi untuk memastikan pengguna dapat kembali ke halaman sebelumnya tanpa kembali ke halaman yang tidak diharapkan.
+- Rute detail (`/education-detail`, `/experience-detail`, `/skill-detail`, `/project-detail`) menangani data extra yang dapat diterima dalam bentuk objek model maupun `Map<String, dynamic>`. Jika data diterima sebagai map, aplikasi mengonversinya kembali menggunakan `Model.fromJson(...)`.
+- Halaman Home (`/`) menggunakan `PopScope(canPop: false)` untuk mengendalikan perilaku tombol kembali ketika pengguna sudah berada di halaman utama.
+
+### 2. Navigasi Setelah Formulir Berhasil Disimpan
+
+- Setelah formulir berhasil dikirim, aplikasi menampilkan dialog ringkasan (`AlertDialog`).
+- Ketika pengguna menekan tombol **OK**, dialog ditutup terlebih dahulu menggunakan:
+  ```dart
+  Navigator.of(context, rootNavigator: true).pop();
+  ```
+- Setelah dialog tertutup, formulir memanggil:
+  ```dart
+  context.pop(true);
+  ```
+- Halaman daftar yang menunggu hasil navigasi melalui `await context.push<bool>(...)` menerima nilai `true` dan melakukan refresh data.
+- Dengan alur ini, pengguna kembali ke layar daftar setelah penyimpanan berhasil, bukan kembali ke formulir yang sudah selesai digunakan.
+
+### 3. Autentikasi melalui Modal In-App
+
+- Pengguna yang belum login diarahkan melalui guard `ensureLoggedIn()` ketika mencoba mengakses fitur yang memerlukan autentikasi.
+- Halaman login (`LoginScreen`) ditampilkan sebagai modal in-app menggunakan konfigurasi `fullscreenDialog: true`.
+- Setelah login berhasil, pengguna dapat melanjutkan proses yang sebelumnya memerlukan autentikasi.
+- Penggunaan modal membantu menjaga alur navigasi login agar tidak mengganggu struktur halaman utama dan halaman formulir.
+
+---
+
+## Tugas 9
+
+### 1. Mengapa kita menggunakan `@JsonSerializable(fieldRename: FieldRename.snake)` dan `@JsonKey(includeToJson: false)` alih-alih mengirim objek `Map<String, dynamic>` mentah langsung dari widget? Jelaskan satu bug yang dicegah atau dapat dicegah oleh pendekatan ini pada model bagianmu.
+
+**Alasan Penggunaan `@JsonSerializable` dan `@JsonKey`:**
+
+Anotasi `@JsonSerializable(fieldRename: FieldRename.snake)` membantu memetakan nama field Dart yang menggunakan konvensi *camelCase*, seperti `categoryDisplay`, `startedAt`, dan `isOngoing`, menjadi *snake_case* yang digunakan oleh serializer Django REST Framework, seperti `category_display`, `started_at`, dan `is_ongoing`.
+
+Kode serialisasi dan deserialisasi kemudian dihasilkan secara otomatis menggunakan `build_runner`. Pendekatan ini memiliki beberapa keuntungan:
+
+- **Type safety:** Model Dart mendefinisikan tipe data setiap field sehingga kesalahan tipe dapat lebih mudah terdeteksi melalui analisis statis atau kompilasi. Namun, perubahan pada API backend tidak otomatis selalu menyebabkan compile error. Penyesuaian tetap diperlukan apabila struktur respons backend berubah.
+- **Konsistensi penamaan:** Pemetaan *camelCase* dan *snake_case* dilakukan secara otomatis sehingga mengurangi risiko kesalahan penulisan nama field secara manual.
+- **Kontrol field yang dikirim:** Anotasi `@JsonKey(includeToJson: false)` memungkinkan field tertentu dikecualikan dari hasil `toJson()`, misalnya field yang dikelola oleh server dan tidak perlu dikirim kembali oleh klien.
+
+**Bug yang Dicegah pada Model Experience:**
+
+Pada model `Experience`, field `started_at` menggunakan `auto_now_add=True` pada Django sehingga nilainya diisi secara otomatis oleh server ketika data dibuat. Field tersebut juga ditandai sebagai `read_only` pada `ExperienceSerializer`.
+
+Jika field `startedAt` tetap disertakan dalam payload POST, klien dapat mengirim nilai yang sebenarnya tidak perlu ditentukan sendiri, misalnya `null`. Karena field tersebut bersifat `read_only`, DRF umumnya mengabaikan nilai input untuk field tersebut. Meskipun demikian, mengirim field yang tidak diperlukan tetap membuat payload kurang sesuai dengan tanggung jawab masing-masing pihak.
+
+Dengan menggunakan `@JsonKey(includeToJson: false)`, field tersebut dikeluarkan dari hasil `toJson()`. Payload POST hanya memuat field yang memang perlu dikirim oleh klien, seperti `title`, `description`, `category`, `thumbnail`, dan `ended_at`.
+
+Jika menggunakan `Map<String, dynamic>` secara manual langsung dari widget, developer harus mengatur nama dan isi setiap field sendiri. Hal tersebut meningkatkan risiko kesalahan penulisan atau pengiriman field yang seharusnya dikelola oleh backend.
+
+---
+
+### 2. Mengapa `Future` yang diteruskan ke `FutureBuilder` harus diinisialisasi di dalam `initState()` alih-alih langsung di dalam `build()`, dan mengapa `ApiClient` sebaiknya melempar `ApiException` daripada mengembalikan `null` pada respons HTTP non-2xx?
+
+**Inisialisasi `Future` di `initState()`:**
+
+Metode `build()` pada Flutter dapat dipanggil berkali-kali ketika terjadi rebuild, misalnya akibat pemanggilan `setState()`, perubahan pada widget induk, atau perubahan `MediaQuery`.
+
+Jika `Future` dibuat langsung di dalam `build()`, setiap rebuild dapat menghasilkan instance `Future` baru. Akibatnya, permintaan HTTP dapat dijalankan kembali meskipun pengguna tidak sedang meminta refresh data.
+
+Hal tersebut dapat menyebabkan:
+- **Permintaan HTTP berulang:** Rebuild yang terjadi berkali-kali dapat memicu permintaan GET baru yang sebenarnya tidak diperlukan.
+- **Pemborosan bandwidth dan beban server:** Permintaan berulang dapat meningkatkan penggunaan jaringan dan jumlah request ke backend.
+- **Perubahan tampilan loading:** `FutureBuilder` dapat kembali ke kondisi menunggu ketika menerima `Future` baru, sehingga tampilan loading dapat muncul kembali.
+
+Dengan menginisialisasi `Future` di dalam `initState()`, objek `Future` dibuat ketika widget pertama kali dipasang ke widget tree. Instance tersebut dapat digunakan kembali selama tidak diganti secara eksplisit.
+
+Penyegaran data tetap dapat dilakukan melalui `RefreshIndicator`, yang memanggil fungsi pengambilan data kembali dan memperbarui `Future` dengan instance baru.
+
+**Melempar `ApiException` Alih-Alih Mengembalikan `null`:**
+
+Mengembalikan `null` ketika menerima respons HTTP non-2xx memiliki beberapa kelemahan:
+- **Kehilangan informasi error:** Pemanggil sulit membedakan kondisi data kosong dengan kegagalan permintaan, seperti error 500 dari server.
+- **Tidak dapat membedakan status HTTP:** Tanpa informasi status code, pemanggil kesulitan membedakan respons 401 (*unauthorized*), 403 (*forbidden*), dan 500 (*internal server error*).
+- **Risiko kesalahan saat pengolahan data:** Jika nilai `null` tidak ditangani dengan benar, aplikasi dapat mengalami error ketika data tersebut digunakan.
+
+Dengan melempar `ApiException(statusCode, message)`, penanganan error menjadi lebih eksplisit dan terstruktur. `FutureBuilder` dapat menangkap error melalui `snapshot.hasError`, sedangkan formulir dapat menggunakan `catch (ApiException e)` untuk menampilkan pesan yang sesuai.
+
+Pada aplikasi ini, penanganan status 401 juga penting karena sesi pengguna perlu dibersihkan melalui `AuthState.clearSession` ketika token tidak lagi dapat digunakan.
+
+---
+
+### 3. Bandingkan `SessionAuthentication` milik Django (dari Tutorial 04/07) dengan `TokenAuthentication` milik DRF (dari Tutorial 10). Mengapa `myportofolio_mobile` menggunakan `TokenAuthentication` sementara `SessionAuthentication` tetap diaktifkan pada backend Django?
+
+**Perbandingan `SessionAuthentication` dan `TokenAuthentication`:**
+
+| Aspek | `SessionAuthentication` | `TokenAuthentication` |
+| :--- | :--- | :--- |
+| **Mekanisme** | Menggunakan session ID yang disimpan dalam cookie browser (`sessionid`). Django menyimpan data sesi di server dan browser mengirimkan cookie pada permintaan berikutnya. | Menggunakan token unik yang dikirim melalui header `Authorization: Token <key>`. Token disimpan dan dikirim oleh klien secara eksplisit. |
+| **CSRF Protection** | Memerlukan perlindungan CSRF untuk permintaan mutasi karena autentikasi menggunakan cookie yang dikirim secara otomatis oleh browser. | Tidak menggunakan mekanisme CSRF yang sama dengan autentikasi berbasis cookie karena token dikirim melalui header `Authorization` secara eksplisit. |
+| **Statefulness** | *Stateful*: server menyimpan data sesi dan mencocokkan permintaan dengan sesi tersebut. | `TokenAuthentication` bawaan DRF tetap melibatkan penyimpanan token di server. Token dikirim oleh klien, kemudian diverifikasi berdasarkan data token yang tersimpan. |
+| **Cocok untuk** | Aplikasi web berbasis browser yang menggunakan cookie dan session Django. | Klien API seperti aplikasi mobile, desktop, dan aplikasi lain yang mengirimkan token melalui header HTTP. |
+
+**Mengapa `myportofolio_mobile` Menggunakan `TokenAuthentication`:**
+
+Aplikasi Flutter menggunakan package `http` untuk mengirim permintaan ke backend Django. Berbeda dengan browser, klien HTTP tersebut tidak otomatis mengelola cookie session seperti browser pada umumnya. Oleh karena itu, penggunaan token lebih sesuai untuk kebutuhan autentikasi aplikasi ini.
+
+Beberapa pertimbangannya:
+- **Pengiriman autentikasi secara eksplisit:** Aplikasi menyertakan token melalui header `Authorization: Token <key>` pada permintaan yang memerlukan autentikasi.
+- **Tidak bergantung pada cookie browser:** Aplikasi mobile tidak perlu mengandalkan mekanisme cookie session yang biasa digunakan oleh browser.
+- **Kemudahan integrasi:** Token dapat dikelola melalui `AuthState` dan digunakan kembali oleh `ApiClient` ketika mengirim permintaan terautentikasi.
+
+**Mengapa `SessionAuthentication` Tetap Diaktifkan pada Backend:**
+
+Backend Django tetap mengaktifkan `SessionAuthentication` bersama `TokenAuthentication` karena keduanya dapat melayani kebutuhan klien yang berbeda:
+- **Mendukung beberapa jenis klien:** Halaman web Django dapat menggunakan cookie session, sedangkan aplikasi mobile menggunakan token.
+- **DRF Browsable API:** Interface bawaan DRF dapat memanfaatkan session authentication untuk membantu developer menguji endpoint melalui browser.
+- **Fleksibilitas integrasi:** Backend tetap dapat melayani klien yang menggunakan autentikasi berbasis session tanpa menghilangkan dukungan token untuk aplikasi mobile.
+
+Dengan demikian, `myportofolio_mobile` menggunakan `TokenAuthentication` karena mekanisme tersebut lebih sesuai dengan cara aplikasi mengirim permintaan API, sedangkan `SessionAuthentication` tetap tersedia untuk kebutuhan akses berbasis browser.
+
+---
+
+### 4. Jelaskan peran job `build` (`very_good_workflows`) dan `build_apk` dalam pipeline `.github/workflows/main.yaml` milikmu (termasuk pemeriksaan apa saja yang dijalankan `very_good_workflows` di balik layar). Mengapa berkas `*.g.dart` dimasukkan ke `.gitignore` meskipun CI membutuhkannya untuk menganalisis dan membangun aplikasi?
+
+**Peran Job `build` (`very_good_workflows`):**
+
+Job `build` menggunakan reusable workflow dari `VeryGoodOpenSource/very_good_workflows`, yaitu `flutter_package.yml@v2`.
+
+Berdasarkan konfigurasi workflow yang digunakan, proses ini mencakup beberapa tahapan:
+- **`flutter pub get`:** Mengunduh dependensi yang didefinisikan dalam `pubspec.yaml`.
+- **`setup` (custom):** Menjalankan perintah tambahan yang didefinisikan melalui parameter `setup`. Pada proyek ini, perintah tersebut digunakan untuk menjalankan:
+  ```bash
+  dart run build_runner build --delete-conflicting-outputs
+  ```
+  Perintah ini menghasilkan berkas `*.g.dart` yang dibutuhkan oleh model `@JsonSerializable`.
+- **Formatting:** Memeriksa format kode Dart menggunakan `dart format --set-exit-if-changed .`.
+- **Static analysis:** Menjalankan `flutter analyze` untuk mendeteksi error, warning, dan pelanggaran aturan lint.
+- **Testing:** Menjalankan `flutter test --coverage` untuk menjalankan pengujian dan menghasilkan laporan *code coverage*.
+
+Berkas hasil generate dapat dikecualikan dari analisis atau perhitungan coverage melalui konfigurasi proyek, sesuai pengaturan yang digunakan.
+
+**Peran Job `build_apk`:**
+
+Job `build_apk` dijalankan setelah job `build` berhasil melalui konfigurasi `needs: build`. Job ini bertujuan menghasilkan APK release yang dapat diunduh sebagai artefak GitHub Actions.
+
+Tahapannya meliputi:
+1. Checkout kode sumber dari repositori.
+2. Setup Java JDK 17 untuk kebutuhan Android Gradle build system.
+3. Setup Flutter SDK versi `3.24.5`.
+4. Menjalankan `flutter pub get` untuk mengunduh dependensi.
+5. Menjalankan `dart run build_runner build --delete-conflicting-outputs` untuk menghasilkan berkas `*.g.dart`.
+6. Menyetujui Android SDK licenses.
+7. Membangun APK release menggunakan:
+   ```bash
+   flutter build apk --release
+   ```
+8. Mengunggah hasil build sebagai artefak GitHub Actions dengan nama `app-release-apk`.
+
+**Mengapa `*.g.dart` Dimasukkan ke `.gitignore`:**
+
+Berkas `*.g.dart` merupakan kode hasil generate otomatis dari berkas sumber Dart menggunakan `build_runner`. Berkas tersebut dapat dihasilkan kembali berdasarkan definisi model dan anotasi yang tersedia.
+
+Alasan berkas ini tidak disertakan dalam version control adalah:
+- **Berkas turunan:** `*.g.dart` merupakan hasil generate dari kode sumber, bukan tempat utama untuk mengubah logika model.
+- **Mengurangi perubahan yang tidak diperlukan:** Tidak menyimpan berkas hasil generate dapat mengurangi jumlah perubahan pada Git ketika model diperbarui.
+- **Mengurangi risiko konflik:** Perubahan pada model dapat menghasilkan perubahan otomatis pada berkas generated yang berpotensi menimbulkan konflik ketika dikerjakan secara paralel.
+- **CI tetap dapat berjalan:** Pipeline menjalankan `build_runner` sebelum proses analisis dan build yang membutuhkan berkas tersebut. Dengan demikian, berkas generated tetap tersedia selama proses CI meskipun tidak disimpan di repositori.
+
+---
+
+## AI Disclosure — Tugas 9
+
+### Tools AI yang Digunakan
+
+**Gemini**
+
+### Bagian yang Dibantu AI dan Kontribusi Saya
+
+| Bagian | Peran AI | Yang Saya Lakukan |
+| :--- | :--- | :--- |
+| **Integrasi Backend DRF (Semua Modul)** | Membantu penyusunan model serialisasi menggunakan `@JsonSerializable`serta mengimplementasi API melalui `ApiClient` untuk endpoint GET dan POST | Menyesuaikan struktur model dengan kebutuhan data aplikasi dan backend Django, memeriksa kesesuaian field dengan serializer, menentukan penanganan field read_only, serta menguji proses pengambilan dan pengiriman data melalui API. |
+| **Formulir Terautentikasi & Post-Save Flow** | Membantu implementasi guard `ensureLoggedIn()`, pengiriman POST dengan token `AuthState`, penanganan `ApiException` sesi 401, dan penutupan dialog konfirmasi. | Menentukan alur UX saat pengguna belum login, mengevaluasi perilaku saat token kedaluwarsa, mengarahkan penutupan dialog ringkasan dengan `pop()` sebelum menutup form, serta memverifikasi refresh data otomatis pada layar list. |
+| **CI/CD Pipeline** | Membantu penyesuaian konfigurasi workflow, termasuk penambahan proses `build_runner` dan pengaturan very_good_workflows. | Mengidentifikasi kebutuhan menjalankan `build_runner` pada CI setelah `*.g.dart` dimasukkan ke `.gitignore`, serta menentukan langkah yang diperlukan pada job build dan build_apk. |
+
+### Evaluasi Hasil AI, Perbaikan Manual, dan Keputusan Pengembangan
+
+1. **Penanganan Field `read_only` pada Model**
+   - **Proses Pengembangan:** Saya menentukan field mana saja yang perlu ditandai `includeToJson: false` dengan memeriksa `read_only_fields` pada setiap Django serializer (`ExperienceSerializer`, `SkillSerializer`, dll.). Misalnya, `started_at` pada Experience bersifat `auto_now_add` sehingga tidak boleh dikirim dari klien.
+
+2. **Konfigurasi CI/CD**
+   - **Perbaikan Manual:** Setelah menambahkan `*.g.dart` ke `.gitignore`, saya mengidentifikasi bahwa kedua job CI (bukan hanya `build_apk`) memerlukan langkah `build_runner`. Job `build` menggunakan parameter `setup` dari `very_good_workflows`, sedangkan `build_apk` menjalankan langkah `run` terpisah.
+
+### Refleksi Kritis terhadap Penggunaan AI
+
+Dalam Tugas 9, AI membantu proses implementasi, terutama pada penyusunan boilerplate serialisasi model, komunikasi HTTP melalui ApiClient, penanganan autentikasi dan alur setelah formulir berhasil disimpan, serta penyesuaian konfigurasi CI/CD. Meskipun demikian, saya tetap terlibat dalam menentukan kebutuhan dan mengevaluasi hasil implementasi. Saya memeriksa kesesuaian struktur model dengan serializer Django, menentukan field yang perlu dikecualikan dari payload, serta menetapkan alur autentikasi dan navigasi sesuai kebutuhan aplikasi. Selain itu, saya memeriksa proses pengiriman dan pengambilan data melalui API serta menjalankan `flutter analyze` untuk memastikan kualitas kode setelah perubahan. Dengan demikian, AI digunakan sebagai alat bantu untuk mempercepat implementasi dan membantu penyelesaian masalah teknis. Sementara itu, keputusan pengembangan, evaluasi hasil, pengujian, dan tanggung jawab terhadap aplikasi tetap berada pada saya.
 
 ---
 
@@ -125,7 +358,7 @@ Pada komponen `LeftDrawer`, opsi **Home** memanfaatkan **`Navigator.pushReplacem
 **Contoh Penggunaan Warna Tema Portofolio di Lebih dari Satu Halaman:**
 Warna tema **Royal Blue (`#1D4ED8`)** digunakan secara konsisten sebagai representasi visual identitas utama aplikasi:
 1. **Pada Halaman Utama (`menu.dart`):** Digunakan sebagai warna latar kartu aksi `"View Education"`.
-2. **Pada Bilah Menu Samping (`left_drawer.dart`):** Digunakan pada gradien header `LeftDrawer` (dari `#1D4ED8` ke `#3B82F6`).
+2. **Pada Bilah Menu Samping (`left_drawer.dart`):** Digunakan pada aksen navigasi menu aktif `LeftDrawer` (dengan warna latar header Navy solid `#0D234A` dan avatar inisial putih).
 3. **Pada Halaman Formulir (`education_form.dart` & `experience_form.dart`):** Digunakan secara spesifik sebagai penanda status aktif (*selected state*) pada *Degree Chips* (formulir Education) dan *Category Chips* (formulir Experience) — di mana chip yang tidak dipilih tetap berlatar putih dengan batas border abu-abu netral (`#CBD5E1`) — serta sebagai warna latar tombol utama **Save** di kedua formulir.
 
 ---
@@ -162,6 +395,44 @@ Menentukan jenis papan ketik (seperti `keyboardType: TextInputType.url` atau `Te
 2. **Tidak Melindungi dari Operasi Tempel (*Paste*):** Pengguna dapat menempelkan teks sembarang dari clipboard ke dalam input angka atau URL.
 3. **Tidak Menjalankan Logika Relasional:** Papan ketik tidak mampu memeriksa logika bisnis internal, seperti memastikan bahwa tanggal selesai tidak boleh mendahului tanggal mulai, atau memverifikasi bahwa URL yang dimasukkan memiliki awalan protokol yang valid (`http://` atau `https://`).
 Oleh karena itu, penegakan integritas data yang andal hanya dapat dicapai melalui validasi logika programatis menggunakan `validator` dan `validate()`.
+
+---
+
+## AI Disclosure — Tugas 8
+
+### Tools AI yang Digunakan
+
+**Claude**
+
+### Bagian yang Dibantu AI dan Kontribusi Saya
+
+| Bagian | Peran AI | Yang Saya Lakukan |
+| :--- | :--- | :--- |
+| **Penyusunan Form dan Navigasi (Tugas 8)** | Membantu menyusun struktur `FormState`, konfigurasi `LeftDrawer`, boilerplate `showDatePicker()`, serta implementasi awal komponen formulir Flutter. | Menentukan kebutuhan dan alur formulir berdasarkan atribut model Django backend, mengembangkan modul *Experience*, mengatur logika checkbox ongoing yang menonaktifkan end date, serta merancang dialog ringkasan menggunakan `AlertDialog`. |
+| **Konsistensi Bahasa** | Membantu menerapkan perubahan string teks antarmuka dan validator berdasarkan arahan yang diberikan. | Menemukan inkonsistensi bahasa pada implementasi sebelumnya dan menentukan penggunaan bahasa Inggris secara konsisten di seluruh antarmuka. Saya juga menentukan penyesuaian teks pada AppBar, tombol aksi, drawer, hint, validator, dan dialog konfirmasi. |
+| **Desain Komponen dan Interaksi** | Memberikan bantuan implementasi kode Flutter berdasarkan arahan desain dan kebutuhan interaksi yang ditentukan. | Menentukan penggunaan Category Chips sebagai pengganti dropdown, menyusun kategori dalam dua baris, menyelaraskan warna Degree Chips dan Category Chips menggunakan Royal Blue (`#1D4ED8`), serta menentukan desain FloatingAppBar berbentuk kapsul dengan ikon hamburger, judul dinamis, dan avatar inisial NA. |
+| **Pengujian dan Perbaikan Kode** | Membantu menganalisis permasalahan navigasi, memberikan saran penggunaan `Navigator.pop()`, dan membantu menindaklanjuti temuan `flutter analyze`. | Menguji navigasi melalui kartu aksi beranda dan drawer di browser Chrome, mengevaluasi perilaku tombol kembali, menerapkan penyesuaian navigasi, serta menjalankan analisis statis untuk memeriksa masalah pada kode. |
+
+### Evaluasi Hasil AI, Perbaikan Manual, dan Keputusan Pengembangan
+
+1. **Penanganan Navigasi dan Entri Riwayat Drawer**
+   - **Keterbatasan AI:** Implementasi awal navigasi pada `left_drawer.dart` langsung memanggil `Navigator.push()` tanpa menutup Drawer terlebih dahulu. Kondisi ini menyebabkan Drawer masih menjadi bagian dari rute aktif sehingga tombol kembali dapat memproses penutupan Drawer sebelum kembali ke halaman sebelumnya.
+   - **Perbaikan Manual:** Setelah menguji perilaku navigasi, saya menambahkan `Navigator.pop(context)` sebelum `Navigator.push()` pada setiap item drawer. Dengan demikian, Drawer ditutup terlebih dahulu sebelum halaman tujuan dibuka.
+
+2. **Penyesuaian Pilihan Kategori dan Konsistensi Visual**
+   - **Proses Pengembangan dan Implementasi:** Pada rancangan awal, saya memilih menggunakan `DropdownButtonFormField` untuk input kategori. Setelah mengevaluasi interaksi dan tampilan formulir, saya memutuskan menggantinya dengan Category Chips karena jumlah pilihan relatif sedikit dan seluruh opsi dapat ditampilkan secara langsung. Saya kemudian mengimplementasikan susunan enam kategori dalam dua baris yang simetris (Baris 1: Full-Time, Part-Time, Internship; Baris 2: Freelance, Volunteer, Research). Saya juga menyelaraskan warna Degree Chips pada formulir Education dan Category Chips pada formulir Experience menggunakan Royal Blue (`#1D4ED8`) sebagai warna aktif saat terpilih (*selected state*).
+
+3. **Kolom Input Kondisional untuk Pilihan Other pada Form Education**
+   - **Keterbatasan AI:** Implementasi awal Degree Selector belum menyediakan kolom deskripsi tambahan ketika pengguna memilih opsi *Other*. Akibatnya, nilai yang tersimpan hanya berupa string `"Other"` tanpa informasi tambahan.
+   - **Perbaikan Manual:** Saya mengidentifikasi kebutuhan informasi tambahan tersebut dan mengarahkan penambahan `TextFormField` kondisional yang hanya ditampilkan ketika `_degree == 'Other'`. Kolom dilengkapi validator wajib isi dan indikator teks *"Selected: Other (<deskripsi>)"* yang diperbarui secara real-time.
+
+### Refleksi Kritis terhadap Penggunaan AI
+
+Dalam pengerjaan Tugas 8, AI membantu mempercepat penerjemahan kebutuhan implementasi menjadi kode Flutter, khususnya pada penyusunan struktur formulir, komponen UI, dan logika validasi. Namun, hasil yang diberikan tidak selalu langsung sesuai dengan kebutuhan aplikasi dan masih memerlukan evaluasi serta penyesuaian.
+
+Saya tetap terlibat dalam menentukan kebutuhan fungsional, mengambil keputusan desain, dan mengevaluasi hasil implementasi. Hal tersebut terlihat dari penyesuaian alur navigasi drawer, perubahan pendekatan input kategori dari dropdown menjadi chips, penyeragaman bahasa antarmuka, serta penambahan input kondisional pada Degree Selector. Saya juga menentukan rancangan visual FloatingAppBar dan konsistensi tampilannya di seluruh halaman.
+
+Penggunaan AI tidak menggantikan proses pengambilan keputusan dan pengujian yang saya lakukan sebagai pengembang. Setiap saran dan kode yang dihasilkan tetap perlu ditinjau berdasarkan kebutuhan aplikasi, diuji secara fungsional, dan disesuaikan sebelum diterapkan. Dengan demikian, AI berperan sebagai alat bantu implementasi, sedangkan perancangan kebutuhan, keputusan pengembangan, dan tanggung jawab terhadap hasil akhir tetap berada pada saya.
 
 ---
 
@@ -244,44 +515,6 @@ Kita tidak bisa hanya mengandalkan Hot Reload ketika:
 3. **Mengubah Tipe Widget:** Perubahan struktur atau konfigurasi widget tertentu mungkin tidak langsung diterapkan dengan benar melalui Hot Reload. Jika perubahan tidak tercermin pada tampilan, lakukan Hot Restart.
 4. **Menambah Dependensi atau Aset Baru:** Penambahan dependensi memerlukan pembaruan melalui `flutter pub get`. Perubahan aset atau font mungkin memerlukan hot restart atau full restart agar dapat digunakan dengan benar.
 5. **Modifikasi Kode Native:** Perubahan berkas platform native pada folder `android/` atau `ios/` (seperti `AndroidManifest.xml` atau konfigurasi Gradle) umumnya membutuhkan full restart atau rebuild.
-
----
-
-## AI Disclosure — Tugas 8
-
-### Tools AI yang Digunakan
-
-**Claude**
-
-### Bagian yang Dibantu AI dan Kontribusi Saya
-
-| Bagian | Peran AI | Yang Saya Lakukan |
-| :--- | :--- | :--- |
-| **Penyusunan Form dan Navigasi (Tugas 8)** | Membantu menyusun struktur `FormState`, konfigurasi `LeftDrawer`, boilerplate `showDatePicker()`, serta implementasi awal komponen formulir Flutter. | Menentukan kebutuhan dan alur formulir berdasarkan atribut model Django backend, mengembangkan modul *Experience*, mengatur logika checkbox ongoing yang menonaktifkan end date, serta merancang dialog ringkasan menggunakan `AlertDialog`. |
-| **Konsistensi Bahasa** | Membantu menerapkan perubahan string teks antarmuka dan validator berdasarkan arahan yang diberikan. | Menemukan inkonsistensi bahasa pada implementasi sebelumnya dan menentukan penggunaan bahasa Inggris secara konsisten di seluruh antarmuka. Saya juga menentukan penyesuaian teks pada AppBar, tombol aksi, drawer, hint, validator, dan dialog konfirmasi. |
-| **Desain Komponen dan Interaksi** | Memberikan bantuan implementasi kode Flutter berdasarkan arahan desain dan kebutuhan interaksi yang ditentukan. | Menentukan penggunaan Category Chips sebagai pengganti dropdown, menyusun kategori dalam dua baris, menyelaraskan warna Degree Chips dan Category Chips menggunakan Royal Blue (`#1D4ED8`), serta menentukan desain FloatingAppBar berbentuk kapsul dengan ikon hamburger, judul dinamis, dan avatar inisial NA. |
-| **Pengujian dan Perbaikan Kode** | Membantu menganalisis permasalahan navigasi, memberikan saran penggunaan `Navigator.pop()`, dan membantu menindaklanjuti temuan `flutter analyze`. | Menguji navigasi melalui kartu aksi beranda dan drawer di browser Chrome, mengevaluasi perilaku tombol kembali, menerapkan penyesuaian navigasi, serta menjalankan analisis statis untuk memeriksa masalah pada kode. |
-
-### Evaluasi Hasil AI, Perbaikan Manual, dan Keputusan Pengembangan
-
-1. **Penanganan Navigasi dan Entri Riwayat Drawer**
-   - **Keterbatasan AI:** Implementasi awal navigasi pada `left_drawer.dart` langsung memanggil `Navigator.push()` tanpa menutup Drawer terlebih dahulu. Kondisi ini menyebabkan Drawer masih menjadi bagian dari rute aktif sehingga tombol kembali dapat memproses penutupan Drawer sebelum kembali ke halaman sebelumnya.
-   - **Perbaikan Manual:** Setelah menguji perilaku navigasi, saya menambahkan `Navigator.pop(context)` sebelum `Navigator.push()` pada setiap item drawer. Dengan demikian, Drawer ditutup terlebih dahulu sebelum halaman tujuan dibuka.
-
-2. **Penyesuaian Pilihan Kategori dan Konsistensi Visual**
-   - **Proses Pengembangan dan Implementasi:** Pada rancangan awal, saya memilih menggunakan `DropdownButtonFormField` untuk input kategori. Setelah mengevaluasi interaksi dan tampilan formulir, saya memutuskan menggantinya dengan Category Chips karena jumlah pilihan relatif sedikit dan seluruh opsi dapat ditampilkan secara langsung. Saya kemudian mengimplementasikan susunan enam kategori dalam dua baris yang simetris (Baris 1: Full-Time, Part-Time, Internship; Baris 2: Freelance, Volunteer, Research). Saya juga menyelaraskan warna Degree Chips pada formulir Education dan Category Chips pada formulir Experience menggunakan Royal Blue (`#1D4ED8`) sebagai warna aktif saat terpilih (*selected state*).
-
-3. **Kolom Input Kondisional untuk Pilihan Other pada Form Education**
-   - **Keterbatasan AI:** Implementasi awal Degree Selector belum menyediakan kolom deskripsi tambahan ketika pengguna memilih opsi *Other*. Akibatnya, nilai yang tersimpan hanya berupa string `"Other"` tanpa informasi tambahan.
-   - **Perbaikan Manual:** Saya mengidentifikasi kebutuhan informasi tambahan tersebut dan mengarahkan penambahan `TextFormField` kondisional yang hanya ditampilkan ketika `_degree == 'Other'`. Kolom dilengkapi validator wajib isi dan indikator teks *"Selected: Other (<deskripsi>)"* yang diperbarui secara real-time.
-
-### Refleksi Kritis terhadap Penggunaan AI
-
-Dalam pengerjaan Tugas 8, AI membantu mempercepat penerjemahan kebutuhan implementasi menjadi kode Flutter, khususnya pada penyusunan struktur formulir, komponen UI, dan logika validasi. Namun, hasil yang diberikan tidak selalu langsung sesuai dengan kebutuhan aplikasi dan masih memerlukan evaluasi serta penyesuaian.
-
-Saya tetap terlibat dalam menentukan kebutuhan fungsional, mengambil keputusan desain, dan mengevaluasi hasil implementasi. Hal tersebut terlihat dari penyesuaian alur navigasi drawer, perubahan pendekatan input kategori dari dropdown menjadi chips, penyeragaman bahasa antarmuka, serta penambahan input kondisional pada Degree Selector. Saya juga menentukan rancangan visual FloatingAppBar dan konsistensi tampilannya di seluruh halaman.
-
-Penggunaan AI tidak menggantikan proses pengambilan keputusan dan pengujian yang saya lakukan sebagai pengembang. Setiap saran dan kode yang dihasilkan tetap perlu ditinjau berdasarkan kebutuhan aplikasi, diuji secara fungsional, dan disesuaikan sebelum diterapkan. Dengan demikian, AI berperan sebagai alat bantu implementasi, sedangkan perancangan kebutuhan, keputusan pengembangan, dan tanggung jawab terhadap hasil akhir tetap berada pada saya.
 
 ---
 

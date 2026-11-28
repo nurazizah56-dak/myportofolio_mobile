@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/models/project.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 
 class ProjectDetailScreen extends StatelessWidget {
   const ProjectDetailScreen({required this.project, super.key});
@@ -9,9 +10,11 @@ class ProjectDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(project.title),
+      appBar: FloatingAppBar(
+        title: project.title,
+        accentColor: const Color(0xFFC2410C),
       ),
+      backgroundColor: const Color(0xFFEFF6FF),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -54,7 +57,17 @@ class ProjectDetailScreen extends StatelessWidget {
                   .split(',')
                   .map((tech) => tech.trim())
                   .where((tech) => tech.isNotEmpty)
-                  .map((tech) => Chip(label: Text(tech)))
+                  .map(
+                    (tech) => Chip(
+                      label: Text(tech),
+                      backgroundColor: const Color(0xFFFFEDD5), // Peach muda
+                      labelStyle: const TextStyle(
+                        color: Color(0xFFC2410C), // Oranye
+                        fontWeight: FontWeight.w600,
+                      ),
+                      side: const BorderSide(color: Color(0xFFFED7AA)),
+                    ),
+                  )
                   .toList(),
             ),
             const SizedBox(height: 16),
@@ -79,11 +92,13 @@ class ProjectDetailScreen extends StatelessWidget {
             const SizedBox(height: 6),
             SelectableText(
               project.projectUrl,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
+              style: const TextStyle(
+                color: Color(0xFFC2410C), // Oranye bukan primary biru
                 decoration: TextDecoration.underline,
+                fontWeight: FontWeight.w600,
               ),
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

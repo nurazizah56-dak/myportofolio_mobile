@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myportofolio_mobile/models/project.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:myportofolio_mobile/widgets/floating_app_bar.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -66,28 +68,48 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Project Created'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Color(0xFFEA580C), size: 22),
+              SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'Project Created!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Title: ${created.title}'),
-              Text('Tech Stack: ${created.techStack}'),
-              Text('URL: ${created.projectUrl}'),
+              _dialogRow('Title', created.title),
+              _dialogRow('Tech Stack', created.techStack),
+              _dialogRow('URL', created.projectUrl),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop();
               },
-              child: const Text('OK'),
+              child: const Text('OK, View Projects List'),
             ),
           ],
         ),
       );
       if (!mounted) return;
-      _formKey.currentState!.reset();
+
+      Router.neglect(context, () {
+        context.go('/projects');
+      });
     } on ApiException catch (e) {
       if (!mounted) return;
       if (e.statusCode == 401) {
@@ -119,13 +141,39 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
     }
   }
 
+  InputDecoration _buildInputDecoration({
+    required String labelText,
+    required String hintText,
+  }) {
+    return InputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFEA580C), width: 1.8),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Project'),
+      appBar: const FloatingAppBar(
+        title: 'Add Project',
+        accentColor: Color(0xFFC2410C),
       ),
       drawer: const LeftDrawer(),
+      backgroundColor: const Color(0xFFEFF6FF),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -134,12 +182,9 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Project Title',
+                decoration: _buildInputDecoration(
                   labelText: 'Title',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  hintText: 'Project Title',
                 ),
                 onChanged: (value) => _title = value,
                 validator: (value) {
@@ -152,12 +197,9 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 maxLines: 3,
-                decoration: InputDecoration(
-                  hintText: 'Project Description',
+                decoration: _buildInputDecoration(
                   labelText: 'Description',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  hintText: 'Project Description',
                 ),
                 onChanged: (value) => _description = value,
                 validator: (value) {
@@ -169,12 +211,9 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'e.g. Flutter, Django, PostgreSQL',
+                decoration: _buildInputDecoration(
                   labelText: 'Tech Stack',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  hintText: 'e.g. Flutter, Django, PostgreSQL',
                 ),
                 onChanged: (value) => _techStack = value,
                 validator: (value) {
@@ -186,24 +225,18 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'https://github.com/...',
+                decoration: _buildInputDecoration(
                   labelText: 'Project URL',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  hintText: 'https://github.com/...',
                 ),
                 onChanged: (value) => _projectUrl = value,
                 validator: (value) => _validateUrl(value, isRequired: true),
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'https://example.com/image.png',
+                decoration: _buildInputDecoration(
                   labelText: 'Project Image URL (Optional)',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
+                  hintText: 'https://example.com/image.png',
                 ),
                 onChanged: (value) => _projectImageUrl = value,
                 validator: (value) => _validateUrl(value, isRequired: false),
@@ -211,21 +244,67 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundColor: const Color(0xFFEA580C), // Deep Orange theme
                   foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14.0),
+                  ),
                 ),
                 onPressed: _isSubmitting ? null : _submit,
                 child: _isSubmitting
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
-                    : const Text('Save Project'),
+                    : const Text(
+                        'Save Project',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0,
+                        ),
+                      ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _dialogRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 85,
+            child: Text(
+              '$label:',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF64748B),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF1E293B),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

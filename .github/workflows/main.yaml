@@ -13,6 +13,7 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v2
     with:
+      setup: dart run build_runner build --delete-conflicting-outputs
       coverage_excludes: "**/*.g.dart"
       min_coverage: 0
       timeout_minutes: 15
@@ -32,6 +33,7 @@ jobs:
           channel: stable
           cache: false
       - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
       - run: yes | flutter doctor --android-licenses || true
       - name: Build APK
         run: |
